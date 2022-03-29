@@ -1,0 +1,40 @@
+.collection {
+  /* has to change to grid */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 200px);
+  grid-auto-rows: 400px;
+  justify-content: center;
+  justify-items: center;
+  align-items: flex-start;
+  width: 100%;
+  column-gap: 50px;
+  row-gap: 50px;
+}
+
+.collection__box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  align-self: center;
+}
+.collection__button {
+  /* class given in AddIcon.js */
+}
+
+.collection__text {
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.1rem;
+  color: #111;
+  text-align: center;
+}
+
+.collection__text span {
+  display: block;
+}
+
+.collection__total {
+  align-self: center;
+}

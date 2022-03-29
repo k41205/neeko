@@ -1,0 +1,45 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  height: 400px;
+  justify-content: space-between;
+}
+.container__header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 25px;
+  width: 100%;
+  gap: 15px;
+}
+.container__button--remove {
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+  border: none;
+  background-color: #aaa;
+  font-size: 20px;
+  height: 100%;
+  border-radius: 12.5px;
+}
+.container__stack {
+  height: 320px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.container__button--add {
+  cursor: pointer;
+  text-align: center;
+  font-size: 24px;
+  border: dotted 1px #111;
+  border-bottom: none;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+}

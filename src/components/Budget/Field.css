@@ -1,0 +1,56 @@
+.container__stackElement {
+  width: 100%;
+  display: flex;
+  /* border: solid 1px #111; */
+  font-size: 14px;
+}
+
+.container__stackElement--label {
+  width: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: solid 1px #111;
+  border-top: none;
+}
+
+.container__stackElement:nth-child(2) .container__stackElement--label {
+  border-top: solid 1px #111;
+}
+
+.container__stackElementDetails {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 80px;
+}
+.container__stackElementDetails--price {
+}
+.container__stackElementDetails--percentage {
+}
+
+/* test purpose */
+#f1 {
+  height: 15px;
+}
+#f1 .container__stackElement--label {
+  background-color: #aaaaaa;
+}
+#f2 {
+  height: 30px;
+}
+#f2 .container__stackElement--label {
+  background-color: #64c8ce;
+}
+#f3 {
+  height: 60px;
+}
+#f3 .container__stackElement--label {
+  background-color: #75ab30;
+}
+#f4 {
+  height: 195px;
+}
+#f4 .container__stackElement--label {
+  background-color: #7a4d19;
+}
