@@ -49,7 +49,7 @@ let DUMMY_COLLECTION = [
   },
 ];
 
-const totalExpenses = DUMMY_COLLECTION.flatMap(({ fields }) => fields)
+const totalExpense = DUMMY_COLLECTION.flatMap(({ fields }) => fields)
   .map(({ amount }) => amount)
   .reduce((prev, current) => prev + current, 0);
 
@@ -63,9 +63,9 @@ const emptyText = (
   </p>
 );
 
-const totalExp = (
+const totalExpText = (
   <div className='collection__total'>
-    <h2>Total expenses: €{totalExpenses}</h2>
+    <h2>Total expenses: €{totalExpense}</h2>
   </div>
 );
 
@@ -82,7 +82,7 @@ const Collection = () => {
           {!DUMMY_COLLECTION && emptyText}
         </div>
       </div>
-      {DUMMY_COLLECTION && totalExp}
+      {DUMMY_COLLECTION && totalExpText}
     </>
   );
 };
