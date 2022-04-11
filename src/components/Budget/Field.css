@@ -13,6 +13,9 @@
   border: solid 1px #111;
   border-top: none;
 }
+.container__stackElement--label > p {
+  background-color: #fff;
+}
 
 .container__stackElement:nth-child(2) .container__stackElement--label {
   border-top: solid 1px #111;

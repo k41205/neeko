@@ -1,4 +1,4 @@
-.collection {
+.budget {
   /* has to change to grid */
   display: grid;
   grid-template-columns: repeat(auto-fit, 200px);
@@ -11,7 +11,7 @@
   row-gap: 50px;
 }
 
-.collection__box {
+.budget__box {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -19,11 +19,17 @@
   gap: 50px;
   align-self: center;
 }
-.collection__button {
-  /* class given in AddIcon.js */
+.budget__button {
+  background: none;
+  background-image: url(./../../assets/AddIcon.svg);
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
 }
 
-.collection__text {
+.budget__text {
   font-weight: 700;
   font-size: 20px;
   letter-spacing: 0.1rem;
@@ -31,10 +37,10 @@
   text-align: center;
 }
 
-.collection__text span {
+.budget__text span {
   display: block;
 }
 
-.collection__total {
+.budget__total {
   align-self: center;
 }

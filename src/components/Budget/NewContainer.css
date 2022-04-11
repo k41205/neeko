@@ -1,0 +1,58 @@
+.newContainer {
+  position: fixed;
+  z-index: 20;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 30px;
+  border: solid 1px #111;
+}
+
+.newContainer__title {
+  margin-bottom: 20px;
+}
+
+.newContainer__form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.newContainer__field {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.newContainer__label {
+}
+
+.newContainer__input {
+  border: 1px solid #111;
+}
+
+.newContainer__buttons {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.newContainer__button {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 12.5px;
+}
+
+.newContainer__button--yes {
+  background-image: url(./../../assets/YesIcon.svg);
+}
+
+.newContainer__button--no {
+  background-image: url(./../../assets/NoIcon.svg);
+}

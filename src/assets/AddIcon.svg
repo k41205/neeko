@@ -1,7 +1,4 @@
-const AddIcon = () => {
-  return (
-    <svg
-      className='collection__button'
+<svg
       width='50'
       height='50'
       viewBox='0 0 50 50'
@@ -14,7 +11,3 @@ const AddIcon = () => {
         fill='white'
       />
     </svg>
-  );
-};
-
-export default AddIcon;

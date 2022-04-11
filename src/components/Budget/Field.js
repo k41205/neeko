@@ -1,6 +1,10 @@
 import './Field.css';
 
-const Field = function ({ data: { label, amount } = {}, tot, merged = [] }) {
+const Field = ({
+  data: { label, amount, color, description } = {},
+  tot,
+  merged = [],
+}) => {
   let percentage = ((amount / tot) * 100).toFixed(0);
 
   if (!(merged.length === 0)) {
@@ -13,7 +17,12 @@ const Field = function ({ data: { label, amount } = {}, tot, merged = [] }) {
 
   return (
     <div className='container__stackElement' style={{ height: `${height}px` }}>
-      <div className='container__stackElement--label'>{label}</div>
+      <div
+        className='container__stackElement--label'
+        style={{ backgroundColor: color }}
+      >
+        <p>{label}</p>
+      </div>
       <div className='container__stackElementDetails'>
         <span className='container__stackElementDetails--percentage'>
           {percentage}%
