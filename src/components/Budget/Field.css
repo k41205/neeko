@@ -12,9 +12,15 @@
   align-items: center;
   border: solid 1px #111;
   border-top: none;
+  overflow: hidden;
 }
 .container__stackElement--label > p {
   background-color: #fff;
+}
+.container__stackElement--label > p > span {
+  display: block;
+  text-align: center;
+  padding: 10px 0;
 }
 
 .container__stackElement:nth-child(2) .container__stackElement--label {

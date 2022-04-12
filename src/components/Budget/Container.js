@@ -15,27 +15,50 @@ const Container = ({
   // console.log(totalAmount);
 
   const fieldsSorted = fields.sort((a, b) => a.amount - b.amount); // ascending order
-  const index = fieldsSorted
+  const perc = fieldsSorted.map(
+    (field) => (((field.amount / totalAmount) * 100).toFixed(1) * 20) / 100
+  );
+  // console.log(perc);
+  let counter = 20;
+  let index1 = -1;
+  // debugger;
+  for (let i = perc.length - 1; i > 1; i--) {
+    if (counter - perc[i] < 1) {
+      index1 = i + 1;
+      break;
+    }
+    counter -= perc[i];
+  }
+  // console.log(index1);
+
+  const index2 = fieldsSorted
     .map(
-      (field) => (((field.amount / totalAmount) * 100).toFixed(0) * 20) / 100
+      (field) => (((field.amount / totalAmount) * 100).toFixed(1) * 20) / 100
     )
     .findIndex((el) => el > 1);
-  let fieldsShowed = fieldsSorted.slice(index);
+  // console.log(index2);
+
+  const indexFinal = index1 > index2 ? index1 : index2;
+
+  let fieldsShowed = fieldsSorted.slice(indexFinal);
   let fieldsMerged = [];
   let mergedProps = [];
+  // console.log(fieldsSorted);
+  // console.log(index);
+  // console.log(fieldsShowed);
 
-  if (index >= 0) {
-    fieldsMerged = fieldsSorted.slice(0, index);
+  if (indexFinal > 0) {
+    fieldsMerged = fieldsSorted.slice(0, indexFinal);
     const fieldsMergedTot = fieldsMerged.reduce(
       (prev, curr) => prev + curr.amount,
       0
     );
-    console.log(fieldsMergedTot);
-    console.log(totalAmount);
+    // console.log(fieldsMergedTot);
+    // console.log(totalAmount);
 
     const fieldsMergedPerc = ((fieldsMergedTot / totalAmount) * 100).toFixed(0);
     mergedProps = [fieldsMergedPerc, fieldsMergedTot];
-    console.log(fieldsMergedPerc);
+    // console.log(fieldsMergedPerc);
   } else fieldsShowed = fieldsSorted;
 
   const [modalView, setModalView] = useState(false);
@@ -45,7 +68,7 @@ const Container = ({
   };
   const submitFieldFormHandler = (dataF) => {
     onSubmitField(dataF);
-    console.log(data);
+    // console.log(data);
 
     setModalView(false);
   };
@@ -54,11 +77,22 @@ const Container = ({
     setModalView(false);
   };
 
-  console.log('FieldsShowed');
-  console.log(fieldsShowed);
-  console.log('FieldsMerged');
-  console.log(fieldsMerged);
+  // console.log('FieldsShowed');
+  // console.log(fieldsShowed);
+  // console.log('FieldsMerged');
+  // console.log(fieldsMerged);
   // console.log(fieldsMergedPerc);
+  const emptyContainer = (
+    <div className='container__stackElement' style={{ height: `300px` }}>
+      <div className='container__stackElement--label'>
+        <p>
+          <span>This container is empty.</span>
+          <span>Add a field!</span>
+        </p>
+      </div>
+    </div>
+  );
+  console.log(fieldsShowed);
 
   return (
     <div className='container'>
@@ -80,6 +114,7 @@ const Container = ({
         {fieldsMerged.length === 0 ? null : (
           <Field key={Math.random()} merged={mergedProps} tot={totalAmount} />
         )}
+        {fieldsShowed.length === 0 && emptyContainer}
         {fieldsShowed.map((field) => (
           <Field key={Math.random()} data={field} tot={totalAmount} />
         ))}

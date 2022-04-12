@@ -45,12 +45,24 @@ const Budget = (props) => {
     setModalView(false);
   };
 
+  console.log(props.data);
+  const containers = props.data.map((container) => {
+    const newContainer = { ...container };
+    newContainer.totalAmount = newContainer.fields.reduce(
+      (p, c) => p + c.amount,
+      0
+    );
+    return newContainer;
+  });
+  containers.sort((a, b) => b.totalAmount - a.totalAmount);
+  console.log(containers);
+
   return (
     <>
       <div className='budget'>
         {props &&
           props?.data &&
-          props.data.map((container) => (
+          containers.map((container) => (
             <Container
               key={container.id}
               data={container}
