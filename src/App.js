@@ -12,7 +12,8 @@ import {
   updateDoc,
   arrayUnion,
 } from 'firebase/firestore';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useContext } from 'react';
+import FirebaseContext from './contexts/firebase-context';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyC2hmOydTEpdmcpoOzzuVLng_j7u76djpo',
@@ -56,6 +57,11 @@ const postData = async (type, data) => {
 
 function App() {
   const [containers, setContainers] = useState([]);
+  const ctx = useContext(FirebaseContext);
+
+  console.log(ctx.text);
+  ctx.text = 'test';
+  console.log(ctx.text);
 
   const getData = useCallback(async () => {
     const querySnapshot = await getDocs(collection(db, 'containers'));
