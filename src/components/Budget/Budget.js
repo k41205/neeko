@@ -6,92 +6,94 @@ import Form from './Form';
 import Backdrop from '../UI/Backdrop';
 import FirebaseContext from '../../contexts/firebase-context';
 
-const emptyText = (
-  <p className='budget__text'>
-    <span>No container found,</span>
-    <span>start creating a new one!</span>
-  </p>
-);
+const Budget = () => {
+  // STATES AND HOOKS
+  const [containers, setContainers] = useState([]);
+  const [modalView, setModalView] = useState(false);
 
-const Budget = (props) => {
   const ctx = useContext(FirebaseContext);
+  useEffect(() => {
+    ctx.getData().then((fetchedContainers) => setContainers(fetchedContainers));
+  }, [ctx]);
+  console.log(containers);
 
-  useEffect(() => ctx.getData(), []);
-  // console.log(props.data);
-
-  const totalExpense = props.data
+  // DATA VARS
+  const totalExpense = containers
     .flatMap(({ fields }) => fields)
     .map(({ amount }) => amount)
     .reduce((prev, current) => prev + current, 0);
 
-  const totalExpText = (
-    <div className='budget__total'>
-      <h2>Total expenses: €{totalExpense}</h2>
-    </div>
+  const sortedContainers = containers
+    .map((container) => {
+      const newContainer = { ...container };
+      newContainer.totalAmount = newContainer.fields.reduce(
+        (p, c) => p + c.amount,
+        0
+      );
+      return newContainer;
+    })
+    .sort((a, b) => b.totalAmount - a.totalAmount);
+
+  // JSX VARS
+  const totalExpText = <h2>Total expenses: €{totalExpense}</h2>;
+
+  const emptyText = (
+    <h2>
+      <span>No container found,</span>
+      <span>start creating a new one!</span>
+    </h2>
   );
 
-  const [modalView, setModalView] = useState(false);
+  // HANDLERS
 
-  const newContainerHandler = () => {
-    setModalView(true);
-  };
-
-  const addContainer = (name) => {
-    props.onSave('container', name);
+  const addContainerHandler = (name) => {
+    ctx.postData('container', name);
     setModalView(false);
   };
 
   const addField = (data) => {
-    props.onSave('field', data);
+    ctx.postData('field', data);
     setModalView(false);
   };
 
-  const cancelAddContainer = () => {
-    setModalView(false);
+  const enterFormHandler = () => {
+    setModalView(true);
   };
 
-  const containers = props.data.map((container) => {
-    const newContainer = { ...container };
-    newContainer.totalAmount = newContainer.fields.reduce(
-      (p, c) => p + c.amount,
-      0
-    );
-    return newContainer;
-  });
-  containers.sort((a, b) => b.totalAmount - a.totalAmount);
+  const escFormHandler = () => {
+    setModalView(false);
+  };
 
   return (
     <>
       <div className='budget'>
-        {props &&
-          props?.data &&
-          containers.map((container) => (
+        {containers.length !== 0 &&
+          sortedContainers.map((container) => (
             <Container
               key={container.id}
               data={container}
               onSubmitField={addField}
             />
           ))}
-        <div className='budget__box'>
-          <button className='budget__button' onClick={newContainerHandler} />
-          {modalView &&
-            ReactDOM.createPortal(
-              <Backdrop onClick={cancelAddContainer} />,
-              document.getElementById('backdrop-root')
-            )}
-          {modalView &&
-            ReactDOM.createPortal(
-              <Form
-                type={'container'}
-                onSubmit={addContainer}
-                onCancel={cancelAddContainer}
-              />,
-              document.getElementById('overlay-root')
-            )}
-          {props.data.length === 0 && emptyText}
-        </div>
+        <button className='budget__button' onClick={enterFormHandler} />
+        {modalView &&
+          ReactDOM.createPortal(
+            <Backdrop onClick={escFormHandler} />,
+            document.getElementById('backdrop-root')
+          )}
+        {modalView &&
+          ReactDOM.createPortal(
+            <Form
+              type={'container'}
+              onSubmit={addContainerHandler}
+              onCancel={escFormHandler}
+            />,
+            document.getElementById('overlay-root')
+          )}
       </div>
-      {props.data.length !== 0 && totalExpText}
+      <div className='budget__total'>
+        {containers.length !== 0 ? totalExpText : emptyText}
+      </div>
     </>
   );
 };

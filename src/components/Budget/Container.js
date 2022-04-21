@@ -8,12 +8,9 @@ import Backdrop from '../UI/Backdrop';
 
 // The height of a container is sampled by 20 steps, each step is equal to 5%. That grants a way to normalize the height of each field. In addition, to avoid a wierd behavior due to contain a large number of small fields, every field with percentage equal to 5% (1 step) or lesser will be merged in one field with predefined height that will show all the contained fields inside.
 //FIXME: need to allocate space to bigger fields and check how much space still remain, when is required more than what has remained a new field that get the remaining space has to be created with all the merged fields
-const Container = ({
-  data,
-  data: { fields = [] },
-  data: { name },
-  onSubmitField,
-}) => {
+const Container = (props) => {
+  const { data, onSubmitField } = props;
+  const { fields = [], name } = data;
   const totalAmount = fields.reduce((prev, curr) => prev + curr.amount, 0);
   // console.log(totalAmount);
 

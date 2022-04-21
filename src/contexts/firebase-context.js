@@ -30,8 +30,9 @@ const FirebaseContext = React.createContext({
 });
 
 export const FirebaseContextProvider = (props) => {
-  const [containers, setContainers] = useState([]);
   console.log('Context');
+
+  const [update, setUpdate] = useState(0);
 
   const postData = async (type, data) => {
     if (type === 'container') {
@@ -41,6 +42,7 @@ export const FirebaseContextProvider = (props) => {
           fields: [],
         });
         console.log('Document written with ID: ', docRef.id);
+        setUpdate((prevState) => prevState + 1);
       } catch (e) {
         console.error('Error adding document: ', e);
       }
@@ -52,6 +54,7 @@ export const FirebaseContextProvider = (props) => {
           fields: arrayUnion(data),
         });
         console.log(`Document updated with ID: (it's a field) `);
+        setUpdate((prevState) => prevState + 1);
       } catch (e) {
         console.error('Error updating document: ', e);
       }
@@ -68,12 +71,11 @@ export const FirebaseContextProvider = (props) => {
       data.id = doc.id;
       return data;
     });
-    // console.log(containers);
-    setContainers(containers);
+    return containers;
   };
 
   return (
-    <FirebaseContext.Provider value={{ containers, getData, postData }}>
+    <FirebaseContext.Provider value={{ getData, postData }}>
       {props.children}
     </FirebaseContext.Provider>
   );

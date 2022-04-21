@@ -2,7 +2,7 @@
   /* has to change to grid */
   display: grid;
   grid-template-columns: repeat(auto-fit, 200px);
-  grid-auto-rows: 400px;
+  /* grid-auto-rows: 400px; */
   justify-content: center;
   justify-items: center;
   align-items: flex-start;
@@ -11,14 +11,6 @@
   row-gap: 50px;
 }
 
-.budget__box {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 50px;
-  align-self: center;
-}
 .budget__button {
   background: none;
   background-image: url(./../../assets/AddIcon.svg);
@@ -27,9 +19,22 @@
   border-radius: 25px;
   border: none;
   cursor: pointer;
+  align-self: center;
 }
 
-.budget__text {
+/* .budget__text {
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.1rem;
+  color: #111;
+  text-align: center;
+} */
+
+.budget__total {
+  align-self: center;
+}
+
+.budget__total h2 {
   font-weight: 700;
   font-size: 20px;
   letter-spacing: 0.1rem;
@@ -37,10 +42,6 @@
   text-align: center;
 }
 
-.budget__text span {
+.budget__total span {
   display: block;
-}
-
-.budget__total {
-  align-self: center;
 }
