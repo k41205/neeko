@@ -1,8 +1,10 @@
 import Container from './Container';
 import './Budget.css';
-import { useState } from 'react';
-import NewContainer from './NewContainer';
+import { useState, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom';
+import Form from './Form';
+import Backdrop from '../UI/Backdrop';
+import FirebaseContext from '../../contexts/firebase-context';
 
 const emptyText = (
   <p className='budget__text'>
@@ -12,8 +14,10 @@ const emptyText = (
 );
 
 const Budget = (props) => {
+  const ctx = useContext(FirebaseContext);
+
+  useEffect(() => ctx.getData(), []);
   // console.log(props.data);
-  console.log('render budget');
 
   const totalExpense = props.data
     .flatMap(({ fields }) => fields)
@@ -37,10 +41,10 @@ const Budget = (props) => {
     setModalView(false);
   };
 
-  // const addField = (data) => {
-  //   props.onSave('field', data);
-  //   setModalView(false);
-  // };
+  const addField = (data) => {
+    props.onSave('field', data);
+    setModalView(false);
+  };
 
   const cancelAddContainer = () => {
     setModalView(false);
@@ -55,7 +59,6 @@ const Budget = (props) => {
     return newContainer;
   });
   containers.sort((a, b) => b.totalAmount - a.totalAmount);
-  console.log(props.data);
 
   return (
     <>
@@ -66,14 +69,20 @@ const Budget = (props) => {
             <Container
               key={container.id}
               data={container}
-              // onSubmitField={addField}
+              onSubmitField={addField}
             />
           ))}
         <div className='budget__box'>
           <button className='budget__button' onClick={newContainerHandler} />
           {modalView &&
             ReactDOM.createPortal(
-              <NewContainer
+              <Backdrop onClick={cancelAddContainer} />,
+              document.getElementById('backdrop-root')
+            )}
+          {modalView &&
+            ReactDOM.createPortal(
+              <Form
+                type={'container'}
                 onSubmit={addContainer}
                 onCancel={cancelAddContainer}
               />,

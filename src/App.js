@@ -9,8 +9,6 @@ import FirebaseContext from './contexts/firebase-context';
 function App() {
   const ctx = useContext(FirebaseContext);
 
-  useEffect(() => ctx.getData(), []);
-
   return (
     <>
       <Header />

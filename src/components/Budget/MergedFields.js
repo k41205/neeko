@@ -1,8 +1,6 @@
 import './MergedFields.css';
 
 const MergedFields = ({ data }) => {
-  console.log(data[0]);
-
   return (
     <div className='mergedFields'>
       {data.map((field) => (

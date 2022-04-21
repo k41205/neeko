@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import ReactDOM from 'react-dom';
 import './Container.css';
 import Field from './Field';
+import Form from './Form';
 import MergedFields from './MergedFields';
-import NewField from './NewField';
+import Backdrop from '../UI/Backdrop';
 
 // The height of a container is sampled by 20 steps, each step is equal to 5%. That grants a way to normalize the height of each field. In addition, to avoid a wierd behavior due to contain a large number of small fields, every field with percentage equal to 5% (1 step) or lesser will be merged in one field with predefined height that will show all the contained fields inside.
 //FIXME: need to allocate space to bigger fields and check how much space still remain, when is required more than what has remained a new field that get the remaining space has to be created with all the merged fields
@@ -12,8 +14,6 @@ const Container = ({
   data: { name },
   onSubmitField,
 }) => {
-  console.log('render Container');
-
   const totalAmount = fields.reduce((prev, curr) => prev + curr.amount, 0);
   // console.log(totalAmount);
 
@@ -70,8 +70,8 @@ const Container = ({
     // debugger;
     setModalView(true);
   };
-  const submitFieldFormHandler = (dataF) => {
-    // onSubmitField(dataF);
+  const submitFieldFormHandler = (data) => {
+    onSubmitField(data);
     // console.log(data);
 
     setModalView(false);
@@ -84,7 +84,6 @@ const Container = ({
   // console.log('FieldsShowed');
   // console.log(fieldsShowed);
   // console.log('FieldsMerged');
-  console.log(fieldsMerged);
   // console.log(fieldsMergedPerc);
   const emptyContainer = (
     <div className='container__stackElement' style={{ height: `300px` }}>
@@ -108,13 +107,21 @@ const Container = ({
           +
         </div>
         {<MergedFields data={fieldsMerged} onHover={viewMergedFieldsHandler} />}
-        {modalView && (
-          <NewField
-            containerRef={data.ref}
-            onSubmit={submitFieldFormHandler}
-            onCancel={escFormHandler}
-          />
-        )}
+        {modalView &&
+          ReactDOM.createPortal(
+            <Backdrop onClick={escFormHandler} />,
+            document.getElementById('backdrop-root')
+          )}
+        {modalView &&
+          ReactDOM.createPortal(
+            <Form
+              type={'field'}
+              containerRef={data.ref}
+              onSubmit={submitFieldFormHandler}
+              onCancel={escFormHandler}
+            />,
+            document.getElementById('overlay-root')
+          )}
         {fieldsMerged.length === 0 ? null : (
           <Field key={Math.random()} merged={mergedProps} tot={totalAmount} />
         )}
