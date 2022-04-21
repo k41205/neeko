@@ -16,7 +16,10 @@ const Field = ({
   const height = (percentage / 100) * 20 * 15;
 
   return (
-    <div className='container__stackElement' style={{ height: `${height}px` }}>
+    <div
+      className='container__stackElement'
+      style={{ height: `${height < 18 ? 18 : height}px` }}
+    >
       <div
         className='container__stackElement--label'
         style={{ backgroundColor: color }}

@@ -31,6 +31,7 @@ const FirebaseContext = React.createContext({
 
 export const FirebaseContextProvider = (props) => {
   const [containers, setContainers] = useState([]);
+  console.log('Context');
 
   const postData = async (type, data) => {
     if (type === 'container') {
@@ -47,10 +48,10 @@ export const FirebaseContextProvider = (props) => {
     if (type === 'field') {
       console.log(data);
       try {
-        const docRef = await updateDoc(data.ref, {
+        await updateDoc(data.ref, {
           fields: arrayUnion(data),
         });
-        // console.log('Document updated with ID: ', data.id);
+        console.log(`Document updated with ID: (it's a field) `);
       } catch (e) {
         console.error('Error updating document: ', e);
       }

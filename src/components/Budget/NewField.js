@@ -1,9 +1,13 @@
 import './NewField.css';
 import Backdrop from '../UI/Backdrop';
-import { useRef } from 'react';
+import { useRef, useContext } from 'react';
 import ReactDOM from 'react-dom';
+import FirebaseContext from '../../contexts/firebase-context';
 
 const NewField = (props) => {
+  console.log('render NewField');
+
+  const ctx = useContext(FirebaseContext);
   const fieldRef = useRef();
   const amountRef = useRef();
   const colorRef = useRef();
@@ -19,6 +23,8 @@ const NewField = (props) => {
       description: descriptionRef.current.value,
     };
     props.onSubmit(data);
+    ctx.postData('field', data);
+    ctx.getData();
   };
   const cancelFormHandler = () => {
     fieldRef.current.value = '';

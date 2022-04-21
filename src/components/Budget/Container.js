@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './Container.css';
 import Field from './Field';
+import MergedFields from './MergedFields';
 import NewField from './NewField';
 
 // The height of a container is sampled by 20 steps, each step is equal to 5%. That grants a way to normalize the height of each field. In addition, to avoid a wierd behavior due to contain a large number of small fields, every field with percentage equal to 5% (1 step) or lesser will be merged in one field with predefined height that will show all the contained fields inside.
@@ -11,6 +12,8 @@ const Container = ({
   data: { name },
   onSubmitField,
 }) => {
+  console.log('render Container');
+
   const totalAmount = fields.reduce((prev, curr) => prev + curr.amount, 0);
   // console.log(totalAmount);
 
@@ -64,10 +67,11 @@ const Container = ({
   const [modalView, setModalView] = useState(false);
 
   const newFieldHandler = () => {
+    // debugger;
     setModalView(true);
   };
   const submitFieldFormHandler = (dataF) => {
-    onSubmitField(dataF);
+    // onSubmitField(dataF);
     // console.log(data);
 
     setModalView(false);
@@ -80,7 +84,7 @@ const Container = ({
   // console.log('FieldsShowed');
   // console.log(fieldsShowed);
   // console.log('FieldsMerged');
-  // console.log(fieldsMerged);
+  console.log(fieldsMerged);
   // console.log(fieldsMergedPerc);
   const emptyContainer = (
     <div className='container__stackElement' style={{ height: `300px` }}>
@@ -92,8 +96,7 @@ const Container = ({
       </div>
     </div>
   );
-  console.log(fieldsShowed);
-
+  const viewMergedFieldsHandler = () => {};
   return (
     <div className='container'>
       <header className='container__header'>
@@ -104,6 +107,7 @@ const Container = ({
         <div onClick={newFieldHandler} className='container__button--add'>
           +
         </div>
+        {<MergedFields data={fieldsMerged} onHover={viewMergedFieldsHandler} />}
         {modalView && (
           <NewField
             containerRef={data.ref}

@@ -3,13 +3,13 @@ import Footer from './components/UI/Footer';
 import Header from './components/UI/Header';
 import Main from './components/UI/Main';
 import Budget from './components/Budget/Budget';
-import { useEffect, useState, useCallback, useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import FirebaseContext from './contexts/firebase-context';
 
 function App() {
   const ctx = useContext(FirebaseContext);
 
-  console.log(ctx);
+  useEffect(() => ctx.getData(), []);
 
   return (
     <>

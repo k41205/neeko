@@ -13,6 +13,7 @@ const emptyText = (
 
 const Budget = (props) => {
   // console.log(props.data);
+  console.log('render budget');
 
   const totalExpense = props.data
     .flatMap(({ fields }) => fields)
@@ -36,16 +37,15 @@ const Budget = (props) => {
     setModalView(false);
   };
 
-  const addField = (data) => {
-    props.onSave('field', data);
-    setModalView(false);
-  };
+  // const addField = (data) => {
+  //   props.onSave('field', data);
+  //   setModalView(false);
+  // };
 
   const cancelAddContainer = () => {
     setModalView(false);
   };
 
-  console.log(props.data);
   const containers = props.data.map((container) => {
     const newContainer = { ...container };
     newContainer.totalAmount = newContainer.fields.reduce(
@@ -55,7 +55,7 @@ const Budget = (props) => {
     return newContainer;
   });
   containers.sort((a, b) => b.totalAmount - a.totalAmount);
-  console.log(containers);
+  console.log(props.data);
 
   return (
     <>
@@ -66,7 +66,7 @@ const Budget = (props) => {
             <Container
               key={container.id}
               data={container}
-              onSubmitField={addField}
+              // onSubmitField={addField}
             />
           ))}
         <div className='budget__box'>

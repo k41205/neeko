@@ -1,0 +1,31 @@
+.mergedFields {
+  position: absolute;
+  display: none;
+  flex-direction: column;
+  z-index: 20;
+  top: 60px;
+  background-color: #fff;
+  padding: 30px;
+  border: solid 1px #111111;
+  width: 100%;
+  gap: 10px;
+}
+
+.mergedFields__box {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.mergedFields__label {
+}
+
+.mergedFields__label p {
+  background-color: #fff;
+}
+
+.mergedFields__percentage {
+}
+
+.mergedFields__price {
+}

@@ -1,7 +1,6 @@
 .container__stackElement {
   width: 100%;
   display: flex;
-  /* border: solid 1px #111; */
   font-size: 14px;
 }
 
@@ -10,10 +9,19 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border: solid 1px #111;
-  border-top: none;
   overflow: hidden;
 }
+
+.container__stackElement > .container__stackElement--label {
+  border: solid 1px #111;
+}
+
+.container__stackElement
+  ~ .container__stackElement
+  > .container__stackElement--label {
+  border-top: none;
+}
+
 .container__stackElement--label > p {
   background-color: #fff;
 }
