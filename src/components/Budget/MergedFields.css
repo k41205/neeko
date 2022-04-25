@@ -1,9 +1,9 @@
 .mergedFields {
-  position: absolute;
   display: none;
+  position: absolute;
   flex-direction: column;
-  z-index: 20;
-  top: 60px;
+  z-index: 10;
+  top: 20px;
   background-color: #fff;
   padding: 30px;
   border: solid 1px #111111;

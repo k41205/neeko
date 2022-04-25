@@ -16,6 +16,7 @@ const Form = (props) => {
     const formHandler = (e) => {
       e.preventDefault();
       const data = {
+        //create id field
         ref: containerRef,
         label: fieldRef.current.value,
         amount: +amountRef.current.value,

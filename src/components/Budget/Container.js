@@ -6,82 +6,47 @@ import Form from './Form';
 import MergedFields from './MergedFields';
 import Backdrop from '../UI/Backdrop';
 
-// The height of a container is sampled by 20 steps, each step is equal to 5%. That grants a way to normalize the height of each field. In addition, to avoid a wierd behavior due to contain a large number of small fields, every field with percentage equal to 5% (1 step) or lesser will be merged in one field with predefined height that will show all the contained fields inside.
-//FIXME: need to allocate space to bigger fields and check how much space still remain, when is required more than what has remained a new field that get the remaining space has to be created with all the merged fields
 const Container = (props) => {
   const { data, onSubmitField } = props;
   const { fields = [], name } = data;
-  const totalAmount = fields.reduce((prev, curr) => prev + curr.amount, 0);
-  // console.log(totalAmount);
 
+  // STATES
+  const [modalView, setModalView] = useState(false);
+
+  // DATA VARS
+  const totalAmount = fields.reduce((prev, curr) => prev + curr.amount, 0);
   const fieldsSorted = fields.sort((a, b) => a.amount - b.amount); // ascending order
-  const perc = fieldsSorted.map(
+  const percentages = fieldsSorted.map(
     (field) => (((field.amount / totalAmount) * 100).toFixed(1) * 20) / 100
   );
-  // console.log(perc);
+
+  // The height of a container is sampled by 20 steps, each step is equal to 5%. That grants a way to normalize the height of each field. The app needs to allocate space to bigger fields and check how much space still remain, when is required more than what has remained, a new field that get that remaining space has to be created with all the merged fields.
   let counter = 20;
-  let index1 = -1;
-  // debugger;
-  for (let i = perc.length - 1; i > 1; i--) {
-    if (counter - perc[i] < 1) {
-      index1 = i + 1;
+  let index = -1;
+  for (let i = percentages.length - 1; i > 1; i--) {
+    if (counter - percentages[i] < 1) {
+      index = i + 1;
       break;
     }
-    counter -= perc[i];
+    counter -= percentages[i];
   }
-  // console.log(index1);
 
-  const index2 = fieldsSorted
-    .map(
-      (field) => (((field.amount / totalAmount) * 100).toFixed(1) * 20) / 100
-    )
-    .findIndex((el) => el > 1);
-  // console.log(index2);
-
-  const indexFinal = index1 > index2 ? index1 : index2;
-
-  let fieldsShowed = fieldsSorted.slice(indexFinal);
+  let fieldsShowed = fieldsSorted.slice(index);
   let fieldsMerged = [];
-  let mergedProps = [];
-  // console.log(fieldsSorted);
-  // console.log(index);
-  // console.log(fieldsShowed);
+  let fieldsMergedTot = 0;
+  let fieldsMergedPerc = 0;
 
-  if (indexFinal > 0) {
-    fieldsMerged = fieldsSorted.slice(0, indexFinal);
-    const fieldsMergedTot = fieldsMerged.reduce(
+  if (index > 0) {
+    fieldsMerged = fieldsSorted.slice(0, index);
+    fieldsMergedTot = fieldsMerged.reduce(
       (prev, curr) => prev + curr.amount,
       0
     );
-    // console.log(fieldsMergedTot);
-    // console.log(totalAmount);
 
-    const fieldsMergedPerc = ((fieldsMergedTot / totalAmount) * 100).toFixed(0);
-    mergedProps = [fieldsMergedPerc, fieldsMergedTot];
-    // console.log(fieldsMergedPerc);
+    fieldsMergedPerc = ((fieldsMergedTot / totalAmount) * 100).toFixed(0);
   } else fieldsShowed = fieldsSorted;
 
-  const [modalView, setModalView] = useState(false);
-
-  const newFieldHandler = () => {
-    // debugger;
-    setModalView(true);
-  };
-  const submitFieldFormHandler = (data) => {
-    onSubmitField(data);
-    // console.log(data);
-
-    setModalView(false);
-  };
-
-  const escFormHandler = () => {
-    setModalView(false);
-  };
-
-  // console.log('FieldsShowed');
-  // console.log(fieldsShowed);
-  // console.log('FieldsMerged');
-  // console.log(fieldsMergedPerc);
+  // JSX VAR
   const emptyContainer = (
     <div className='container__stackElement' style={{ height: `300px` }}>
       <div className='container__stackElement--label'>
@@ -92,7 +57,39 @@ const Container = (props) => {
       </div>
     </div>
   );
-  const viewMergedFieldsHandler = () => {};
+
+  const mergedFieldsElement = (
+    <div className='container__stackElement merged' style={{ height: `18px` }}>
+      <div
+        className='container__stackElement--label'
+        style={{ backgroundColor: '#ffffff' }}
+      >
+        <p>...</p>
+      </div>
+      <div className='container__stackElementDetails'>
+        <span className='container__stackElementDetails--percentage'>
+          {fieldsMergedPerc}%
+        </span>
+        <span className='container__stackElementDetails--price'>
+          €{fieldsMergedTot}
+        </span>
+      </div>
+    </div>
+  );
+  // HANDLERS
+
+  const newFieldHandler = () => {
+    setModalView(true);
+  };
+  const submitFieldFormHandler = (data) => {
+    onSubmitField(data);
+    setModalView(false);
+  };
+
+  const escFormHandler = () => {
+    setModalView(false);
+  };
+
   return (
     <div className='container'>
       <header className='container__header'>
@@ -103,7 +100,8 @@ const Container = (props) => {
         <div onClick={newFieldHandler} className='container__button--add'>
           +
         </div>
-        {<MergedFields data={fieldsMerged} onHover={viewMergedFieldsHandler} />}
+        {fieldsMerged.length !== 0 && mergedFieldsElement}
+        {fieldsMerged.length !== 0 && <MergedFields data={fieldsMerged} />}
         {modalView &&
           ReactDOM.createPortal(
             <Backdrop onClick={escFormHandler} />,
@@ -119,12 +117,14 @@ const Container = (props) => {
             />,
             document.getElementById('overlay-root')
           )}
-        {fieldsMerged.length === 0 ? null : (
-          <Field key={Math.random()} merged={mergedProps} tot={totalAmount} />
-        )}
         {fieldsShowed.length === 0 && emptyContainer}
         {fieldsShowed.map((field) => (
-          <Field key={Math.random()} data={field} tot={totalAmount} />
+          <Field
+            key={Math.random()}
+            data={field}
+            dataMerged={fieldsMerged}
+            tot={totalAmount}
+          />
         ))}
       </div>
       <footer className='container__footer'>

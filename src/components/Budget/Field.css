@@ -46,28 +46,6 @@
 .container__stackElementDetails--percentage {
 }
 
-/* test purpose */
-#f1 {
-  height: 15px;
-}
-#f1 .container__stackElement--label {
-  background-color: #aaaaaa;
-}
-#f2 {
-  height: 30px;
-}
-#f2 .container__stackElement--label {
-  background-color: #64c8ce;
-}
-#f3 {
-  height: 60px;
-}
-#f3 .container__stackElement--label {
-  background-color: #75ab30;
-}
-#f4 {
-  height: 195px;
-}
-#f4 .container__stackElement--label {
-  background-color: #7a4d19;
+.container__stackElement.merged:hover ~ .mergedFields {
+  display: flex;
 }

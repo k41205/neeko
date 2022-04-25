@@ -27,6 +27,7 @@
   border-radius: 12.5px;
 }
 .container__stack {
+  position: relative;
   height: 320px;
   width: 100%;
   display: flex;

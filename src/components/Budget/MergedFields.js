@@ -1,6 +1,8 @@
 import './MergedFields.css';
 
-const MergedFields = ({ data }) => {
+const MergedFields = (props) => {
+  const { data } = props;
+
   return (
     <div className='mergedFields'>
       {data.map((field) => (

@@ -45,7 +45,6 @@ const Budget = () => {
   );
 
   // HANDLERS
-
   const addContainerHandler = (name) => {
     ctx.postData('container', name);
     setModalView(false);
