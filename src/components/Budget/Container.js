@@ -7,7 +7,7 @@ import MergedFields from './MergedFields';
 import Backdrop from '../UI/Backdrop';
 
 const Container = (props) => {
-  const { data, onSubmitField } = props;
+  const { data, onSubmitField, onDeleteContainer } = props;
   const { fields = [], name } = data;
 
   // STATES
@@ -90,11 +90,20 @@ const Container = (props) => {
     setModalView(false);
   };
 
+  const deleteContainerHandler = () => {
+    onDeleteContainer(data.ref);
+  };
+
   return (
     <div className='container'>
       <header className='container__header'>
         <h2 className='container__name'>{name}</h2>
-        <button className='container__button--remove'>X</button>
+        <button
+          onClick={deleteContainerHandler}
+          className='container__button--remove'
+        >
+          X
+        </button>
       </header>
       <div className='container__stack'>
         <div onClick={newFieldHandler} className='container__button--add'>

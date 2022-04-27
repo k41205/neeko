@@ -55,6 +55,12 @@ const Budget = () => {
     setModalView(false);
   };
 
+  const deleteContainer = (dataRef) => {
+    console.log(dataRef);
+
+    ctx.deleteData(dataRef);
+  };
+
   const enterFormHandler = () => {
     setModalView(true);
   };
@@ -72,6 +78,7 @@ const Budget = () => {
               key={container.id}
               data={container}
               onSubmitField={addField}
+              onDeleteContainer={deleteContainer}
             />
           ))}
         <button className='budget__button' onClick={enterFormHandler} />

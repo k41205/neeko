@@ -23,14 +23,6 @@ const formReducer = (state, action) => {
       amountValid: action.val > 0,
     };
   }
-  if (action.type === 'INPUT_BLUR') {
-    return {
-      ...state,
-      nameValid: state.nameValue.length !== 0,
-      fieldValid: state.fieldValue.length !== 0 && state.fieldValue !== '...',
-      amountValid: state.amountValue > 0,
-    };
-  }
 
   return {
     fieldValue: '',
@@ -192,20 +184,16 @@ const Form = (props) => {
         console.log('error');
         return;
       }
-      //   props.onSubmit(nameContainerRef.current.value);
+      props.onSubmit(nameContainerRef.current.value);
     };
 
     const cancelFormHandler = (e) => {
-      //   nameContainerRef.current.value = '';
+      nameContainerRef.current.value = '';
       props.onCancel();
     };
 
     const nameChangeHandler = (e) => {
       dispatchForm({ type: 'NAME_INPUT', val: e.target.value });
-    };
-
-    const validateNameHandler = () => {
-      dispatchForm({ type: 'INPUT_BLUR' });
     };
 
     return (
@@ -221,10 +209,9 @@ const Form = (props) => {
                 formState.nameValid === false ? errorCl : ''
               }`}
               id='name'
-              //   ref={nameContainerRef}
+              ref={nameContainerRef}
               value={formState.nameValue}
               onChange={nameChangeHandler}
-              onBlur={validateNameHandler}
             ></input>
             {formState.nameValid === false ? (
               <p className='error-text'>Name can't be empty</p>

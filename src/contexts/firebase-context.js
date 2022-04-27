@@ -7,6 +7,8 @@ import {
   getDocs,
   updateDoc,
   arrayUnion,
+  doc,
+  deleteDoc,
 } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -27,12 +29,26 @@ const db = getFirestore(app);
 const FirebaseContext = React.createContext({
   postData: (type, data) => {},
   getData: () => {},
+  deleteData: (dataRef) => {},
 });
 
 export const FirebaseContextProvider = (props) => {
   console.log('Context');
 
   const [update, setUpdate] = useState(0);
+
+  const getData = async () => {
+    const querySnapshot = await getDocs(collection(db, 'containers'));
+    // obj.docs[0]._document.data.value.mapValue.fields
+    // console.log(querySnapshot);
+    const containers = querySnapshot.docs.map((doc) => {
+      const data = doc.data();
+      data.id = doc.id;
+      data.ref = doc.ref;
+      return data;
+    });
+    return containers;
+  };
 
   const postData = async (type, data) => {
     if (type === 'container') {
@@ -61,21 +77,18 @@ export const FirebaseContextProvider = (props) => {
     }
   };
 
-  const getData = async () => {
-    const querySnapshot = await getDocs(collection(db, 'containers'));
-    // obj.docs[0]._document.data.value.mapValue.fields
-    // console.log(querySnapshot);
-    const containers = querySnapshot.docs.map((doc) => {
-      const data = doc.data();
-      data.id = doc.id;
-      data.ref = doc.ref;
-      return data;
-    });
-    return containers;
+  const deleteData = async (dataRef) => {
+    try {
+      await deleteDoc(dataRef);
+      console.log(`Document deleted`);
+      setUpdate((prevState) => prevState + 1);
+    } catch (e) {
+      console.error('Error deleting a document: ', e);
+    }
   };
 
   return (
-    <FirebaseContext.Provider value={{ getData, postData }}>
+    <FirebaseContext.Provider value={{ getData, postData, deleteData }}>
       {props.children}
     </FirebaseContext.Provider>
   );
