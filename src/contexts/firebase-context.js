@@ -68,6 +68,7 @@ export const FirebaseContextProvider = (props) => {
     const containers = querySnapshot.docs.map((doc) => {
       const data = doc.data();
       data.id = doc.id;
+      data.ref = doc.ref;
       return data;
     });
     return containers;

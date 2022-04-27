@@ -7,6 +7,7 @@
   background-color: #fff;
   padding: 30px;
   border: solid 1px #111;
+  width: 400px;
 }
 
 .form__title {
@@ -16,14 +17,17 @@
 .form__chest {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 25px;
+  align-items: flex-start;
 }
 
 .form__drawer {
+  position: relative;
   display: flex;
   gap: 10px;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
+  width: 100%;
 }
 
 .form__label {
@@ -55,4 +59,27 @@
 
 .form__button--no {
   background-image: url(./../../assets/NoIcon.svg);
+}
+
+.error {
+  background-color: palevioletred;
+  border: 1px solid red;
+}
+
+.error:focus-visible {
+  outline: 1px auto red;
+}
+
+.error-text {
+  position: absolute;
+  top: 22px;
+  left: 0;
+  color: red;
+}
+
+.form__button--yes:disabled,
+.form__button--yes:disabled:hover,
+.form__button--yes:disabled:active {
+  background-color: #111;
+  cursor: not-allowed;
 }
