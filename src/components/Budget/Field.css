@@ -1,10 +1,10 @@
-.container__stackElement {
+.field {
   width: 100%;
   display: flex;
   font-size: 14px;
 }
 
-.container__stackElement--label {
+.field__label {
   width: 120px;
   display: flex;
   justify-content: center;
@@ -12,40 +12,43 @@
   overflow: hidden;
 }
 
-.container__stackElement > .container__stackElement--label {
+.field > .field__label {
   border: solid 1px #111;
 }
 
-.container__stackElement
-  ~ .container__stackElement
-  > .container__stackElement--label {
+.field ~ .field > .field__label {
   border-top: none;
 }
 
-.container__stackElement--label > p {
+.field.merged-hidden:hover,
+.field.merged-visible:hover {
+  border: groove 1px #111;
+  cursor: pointer;
+}
+
+.field.merged-visible ~ .mergedFields {
+  display: flex;
+}
+
+.field__label > p {
   background-color: #fff;
 }
-.container__stackElement--label > p > span {
+.field__label > p > span {
   display: block;
   text-align: center;
   padding: 10px 0;
 }
 
-.container__stackElement:nth-child(2) .container__stackElement--label {
-  border-top: solid 1px #111;
-}
-
-.container__stackElementDetails {
+.field__details {
   display: flex;
   align-items: center;
   justify-content: space-around;
   width: 80px;
 }
-.container__stackElementDetails--price {
+.field__details--price {
 }
-.container__stackElementDetails--percentage {
+.field__details--percentage {
 }
 
-.container__stackElement.merged:hover ~ .mergedFields {
-  display: flex;
+.field__actions {
 }

@@ -3,12 +3,10 @@
   position: absolute;
   flex-direction: column;
   z-index: 10;
-  top: 20px;
+  top: 38px;
   background-color: #fff;
-  padding: 30px;
-  border: solid 1px #111111;
+  border: dotted 1px #111111;
   width: 100%;
-  gap: 10px;
 }
 
 .mergedFields__box {
@@ -17,11 +15,11 @@
   justify-content: center;
 }
 
-.mergedFields__label {
+.mergedFields__box > * {
+  background-color: #fff;
 }
 
-.mergedFields__label p {
-  background-color: #fff;
+.mergedFields__label {
 }
 
 .mergedFields__percentage {

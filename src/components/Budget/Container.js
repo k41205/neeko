@@ -11,6 +11,7 @@ const Container = (props) => {
   const { fields = [], name } = data;
 
   // STATES
+  const [mergedClass, setMergedClass] = useState('merged-hidden');
   const [modalView, setModalView] = useState(false);
 
   // DATA VARS
@@ -46,37 +47,13 @@ const Container = (props) => {
     fieldsMergedPerc = ((fieldsMergedTot / totalAmount) * 100).toFixed(0);
   } else fieldsShowed = fieldsSorted;
 
-  // JSX VAR
-  const emptyContainer = (
-    <div className='container__stackElement' style={{ height: `300px` }}>
-      <div className='container__stackElement--label'>
-        <p>
-          <span>This container is empty.</span>
-          <span>Add a field!</span>
-        </p>
-      </div>
-    </div>
-  );
-
-  const mergedFieldsElement = (
-    <div className='container__stackElement merged' style={{ height: `18px` }}>
-      <div
-        className='container__stackElement--label'
-        style={{ backgroundColor: '#ffffff' }}
-      >
-        <p>...</p>
-      </div>
-      <div className='container__stackElementDetails'>
-        <span className='container__stackElementDetails--percentage'>
-          {fieldsMergedPerc}%
-        </span>
-        <span className='container__stackElementDetails--price'>
-          €{fieldsMergedTot}
-        </span>
-      </div>
-    </div>
-  );
   // HANDLERS
+
+  const mergedVisibilityHandler = () => {
+    mergedClass === 'merged-hidden'
+      ? setMergedClass('merged-visible')
+      : setMergedClass('merged-hidden');
+  };
 
   const newFieldHandler = () => {
     setModalView(true);
@@ -93,6 +70,34 @@ const Container = (props) => {
   const deleteContainerHandler = () => {
     onDeleteContainer(data.ref);
   };
+
+  // JSX VAR
+  const emptyContainer = (
+    <div className='field' style={{ height: `300px` }}>
+      <div className='field__label'>
+        <p>
+          <span>This container is empty.</span>
+          <span>Add a field!</span>
+        </p>
+      </div>
+    </div>
+  );
+
+  const mergedFieldsElement = (
+    <div
+      onClick={mergedVisibilityHandler}
+      className={`field ${mergedClass}`}
+      style={{ height: `18px` }}
+    >
+      <div className='field__label' style={{ backgroundColor: '#ffffff' }}>
+        <p>...</p>
+      </div>
+      <div className='field__details'>
+        <span className='field__details--percentage'>{fieldsMergedPerc}%</span>
+        <span className='field__details--price'>€{fieldsMergedTot}</span>
+      </div>
+    </div>
+  );
 
   return (
     <div className='container'>
@@ -129,7 +134,7 @@ const Container = (props) => {
         {fieldsShowed.length === 0 && emptyContainer}
         {fieldsShowed.map((field) => (
           <Field
-            key={Math.random()}
+            key={field.id}
             data={field}
             dataMerged={fieldsMerged}
             tot={totalAmount}
