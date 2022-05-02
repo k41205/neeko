@@ -1,13 +1,11 @@
 .container {
-  position: relative;
   display: flex;
   flex-direction: column;
-  width: 200px;
-  height: 400px;
+  width: 250px;
+  height: 425px;
   justify-content: space-between;
 }
 .container__header {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -15,17 +13,34 @@
   width: 100%;
   gap: 15px;
 }
-.container__button--remove {
-  position: absolute;
-  top: 0;
-  right: 0;
+
+.container__buttons {
+  height: 25px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.container__button {
   cursor: pointer;
   border: none;
-  background-color: #aaa;
-  font-size: 20px;
-  height: 100%;
+  width: 24px;
+  height: 24px;
   border-radius: 12.5px;
+  background: none;
 }
+
+.container__button--rename {
+  background: url(./../../assets/EditFieldIcon.svg);
+}
+
+.container__button--edit {
+  background: url(./../../assets/EditContainerIcon.svg);
+}
+
+.container__button--remove {
+  background: url(./../../assets/DeleteContainerIcon.svg);
+}
+
 .container__stack {
   position: relative;
   height: 320px;

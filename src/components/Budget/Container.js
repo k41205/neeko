@@ -13,6 +13,7 @@ const Container = (props) => {
   // STATES
   const [mergedClass, setMergedClass] = useState('merged-hidden');
   const [modalView, setModalView] = useState(false);
+  const [edit, setEdit] = useState(false);
 
   // DATA VARS
   const totalAmount = fields.reduce((prev, curr) => prev + curr.amount, 0);
@@ -71,6 +72,10 @@ const Container = (props) => {
     onDeleteContainer(data.ref);
   };
 
+  const editContainerHandler = () => {
+    edit ? setEdit(false) : setEdit(true);
+  };
+
   // JSX VAR
   const emptyContainer = (
     <div className='field' style={{ height: `300px` }}>
@@ -101,21 +106,28 @@ const Container = (props) => {
 
   return (
     <div className='container'>
-      <header className='container__header'>
-        <h2 className='container__name'>{name}</h2>
+      <div className='container__buttons'>
+        <button
+          onClick={editContainerHandler}
+          className='container__button container__button--edit'
+        ></button>
+        <button className='container__button container__button--rename'></button>
         <button
           onClick={deleteContainerHandler}
-          className='container__button--remove'
-        >
-          X
-        </button>
+          className='container__button container__button--remove'
+        ></button>
+      </div>
+      <header className='container__header'>
+        <h2 className='container__name'>{name}</h2>
       </header>
       <div className='container__stack'>
         <div onClick={newFieldHandler} className='container__button--add'>
           +
         </div>
         {fieldsMerged.length !== 0 && mergedFieldsElement}
-        {fieldsMerged.length !== 0 && <MergedFields data={fieldsMerged} />}
+        {fieldsMerged.length !== 0 && (
+          <MergedFields data={fieldsMerged} fieldAction={edit} />
+        )}
         {modalView &&
           ReactDOM.createPortal(
             <Backdrop onClick={escFormHandler} />,
@@ -124,7 +136,7 @@ const Container = (props) => {
         {modalView &&
           ReactDOM.createPortal(
             <Form
-              type={'field'}
+              type={'newField'}
               containerRef={data.ref}
               onSubmit={submitFieldFormHandler}
               onCancel={escFormHandler}
@@ -138,6 +150,7 @@ const Container = (props) => {
             data={field}
             dataMerged={fieldsMerged}
             tot={totalAmount}
+            fieldAction={edit}
           />
         ))}
       </div>

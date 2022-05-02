@@ -1,13 +1,13 @@
 .budget {
   /* has to change to grid */
   display: grid;
-  grid-template-columns: repeat(auto-fit, 200px);
+  grid-template-columns: repeat(auto-fit, 250px);
   /* grid-auto-rows: 400px; */
   justify-content: center;
   justify-items: center;
   align-items: flex-start;
   width: 100%;
-  column-gap: 50px;
+  column-gap: 25px;
   row-gap: 50px;
 }
 

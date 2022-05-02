@@ -50,5 +50,26 @@
 .field__details--percentage {
 }
 
-.field__actions {
+.field__actions.hidden {
+  display: none;
+}
+
+.field__actions.visible {
+  display: flex;
+}
+
+.field__button {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+.field__button--edit {
+  background: url(./../../assets/EditFieldIcon.svg);
+  background-size: contain;
+}
+.field__button--delete {
+  background: url(./../../assets/DeleteFieldIcon.svg);
+  background-size: contain;
 }

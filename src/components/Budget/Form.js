@@ -1,5 +1,6 @@
-import './Form.css';
 import { useRef, useReducer } from 'react';
+import './Form.css';
+import Input from './Input';
 
 const formReducer = (state, action) => {
   if (action.type === 'NAME_INPUT') {
@@ -23,7 +24,6 @@ const formReducer = (state, action) => {
       amountValid: action.val > 0,
     };
   }
-
   return {
     fieldValue: '',
     fieldValid: false,
@@ -31,11 +31,19 @@ const formReducer = (state, action) => {
     amountValid: false,
     nameValue: '',
     nameValid: false,
+    error: null,
   };
 };
 
 const Form = (props) => {
-  const { type, containerRef } = props;
+  const { type, onSubmit, onCancel, containerRef } = props;
+
+  const uuid = crypto.randomUUID();
+  const fieldRef = useRef();
+  const amountRef = useRef();
+  const colorRef = useRef();
+  const descriptionRef = useRef();
+  const nameContainerRef = useRef();
 
   const [formState, dispatchForm] = useReducer(formReducer, {
     fieldValue: '',
@@ -46,34 +54,69 @@ const Form = (props) => {
     nameValid: null,
   });
 
-  const fieldRef = useRef();
-  const amountRef = useRef();
-  const colorRef = useRef();
-  const descriptionRef = useRef();
-  const nameContainerRef = useRef();
-  const uuid = crypto.randomUUID();
-
-  const randomColor = () => {
-    const maxVal = 0xffffff;
-    const randomNumber = Math.floor(Math.random() * maxVal);
-    const exanumber = randomNumber.toString(16);
-    const color = `#${exanumber.padStart(6, 0)}`;
-    return color;
+  const onChangeFieldName = (value) => {
+    dispatchForm({ type: 'FIELD_INPUT', val: value });
   };
 
-  const errorCl = 'error';
+  const onChangeAmount = (value) => {
+    dispatchForm({ type: 'AMOUNT_INPUT', val: +value });
+  };
 
-  // FIELD FORM
-  if (type === 'field') {
-    const title = 'Create a new field';
+  const onChangeContainerName = (value) => {
+    dispatchForm({ type: 'NAME_INPUT', val: value });
+  };
 
-    const formHandler = (e) => {
-      e.preventDefault();
-      if (!formState.fieldValid || !formState.amountValid) {
-        return;
-      }
+  const cancelFormHandler = () => {
+    onCancel();
+  };
 
-      const data = {
+  let inputs;
+  let title;
+  let valid;
+
+  switch (type) {
+    case 'newField': {
+      valid = formState.fieldValid && formState.amountValid;
+      title = 'Create a new field';
+      inputs = [
+        <Input
+          key='fieldName'
+          type='fieldName'
+          ref={fieldRef}
+          onChange={onChangeFieldName}
+          valid={formState.fieldValid}
+        />,
+        <Input
+          key='amount'
+          type='amount'
+          ref={amountRef}
+          onChange={onChangeAmount}
+          valid={formState.amountValid}
+        />,
+        <Input key='color' type='color' ref={colorRef} />,
+        <Input key='description' type='description' ref={descriptionRef} />,
+      ];
+      break;
+    }
+    case 'newContainer': {
+      valid = formState.nameValid;
+      title = 'Create a new container';
+      inputs = (
+        <Input
+          type='containerName'
+          ref={nameContainerRef}
+          onChange={onChangeContainerName}
+          valid={formState.nameValid}
+        />
+      );
+    }
+  }
+
+  const formHandler = (e) => {
+    e.preventDefault();
+    let data;
+    if (type === 'newField') {
+      data = {
         id: uuid,
         ref: containerRef, // it's needed to update the entire object with unionArray in Firestore
         label: fieldRef.current.value,
@@ -81,158 +124,34 @@ const Form = (props) => {
         color: colorRef.current.value,
         description: descriptionRef.current.value,
       };
-      props.onSubmit(data);
-    };
-    const cancelFormHandler = () => {
-      fieldRef.current.value = '';
-      amountRef.current.value = '';
-      colorRef.current.value = '#000000';
-      descriptionRef.current.value = '';
-      props.onCancel();
-    };
+    }
 
-    const fieldChangeHandler = (e) => {
-      dispatchForm({ type: 'FIELD_INPUT', val: e.target.value });
-    };
-
-    const amountChangeHandler = (e) => {
-      dispatchForm({ type: 'AMOUNT_INPUT', val: +e.target.value });
-    };
-
-    return (
-      <div className='form'>
-        <h2 className='form__title'>{title}</h2>
-        <form onSubmit={formHandler} className='form__chest'>
-          <div className='form__drawer'>
-            <label className='form__label' htmlFor='field'>
-              Field:
-            </label>
-            <input
-              className={`form__input ${
-                formState.fieldValid === false ? errorCl : ''
-              }`}
-              id='field'
-              ref={fieldRef}
-              onChange={fieldChangeHandler}
-            ></input>
-            {formState.fieldValid === false ? (
-              <p className='error-text'>Field can't be empty or ...</p>
-            ) : null}
-          </div>
-          <div className='form__drawer'>
-            <label className='form__label' htmlFor='amount'>
-              Amount:
-            </label>
-            <input
-              className={`form__input ${
-                formState.amountValid === false ? errorCl : ''
-              }`}
-              id='amount'
-              ref={amountRef}
-              onChange={amountChangeHandler}
-            ></input>
-            {formState.amountValid === false ? (
-              <p className='error-text'>
-                Amount must be a number greater than 0
-              </p>
-            ) : null}
-          </div>
-          <div className='form__drawer'>
-            <label className='form__label' htmlFor='color'>
-              Color:
-            </label>
-            <input
-              className='form__input'
-              id='color'
-              ref={colorRef}
-              type='color'
-              defaultValue={randomColor()}
-            ></input>
-          </div>
-          <div className='form__drawer'>
-            <label className='form__label' htmlFor='description'>
-              Description:
-            </label>
-            <textarea
-              className='form__input'
-              id='description'
-              ref={descriptionRef}
-            ></textarea>
-          </div>
-          <div className='form__buttons'>
-            <button
-              type='submit'
-              className='form__button form__button--yes'
-              disabled={!formState.fieldValid || !formState.amountValid}
-            ></button>
-            <button
-              type='button'
-              className='form__button form__button--no'
-              onClick={cancelFormHandler}
-            ></button>
-          </div>
-        </form>
-      </div>
-    );
-  }
-
-  // CONTAINER FORM
-  if (type === 'container') {
-    const formHandler = (e) => {
-      e.preventDefault();
-      if (!formState.nameValid) {
-        console.log('error');
-        return;
-      }
-      props.onSubmit(nameContainerRef.current.value);
-    };
-
-    const cancelFormHandler = (e) => {
-      nameContainerRef.current.value = '';
-      props.onCancel();
-    };
-
-    const nameChangeHandler = (e) => {
-      dispatchForm({ type: 'NAME_INPUT', val: e.target.value });
-    };
-
-    return (
-      <div className='form'>
-        <h2 className='form__title'>Create a new container</h2>
-        <form onSubmit={formHandler} className='form__chest'>
-          <div className='form__drawer'>
-            <label className='form__label' htmlFor='name'>
-              Name:
-            </label>
-            <input
-              className={`form__input ${
-                formState.nameValid === false ? errorCl : ''
-              }`}
-              id='name'
-              ref={nameContainerRef}
-              value={formState.nameValue}
-              onChange={nameChangeHandler}
-            ></input>
-            {formState.nameValid === false ? (
-              <p className='error-text'>Name can't be empty</p>
-            ) : null}
-          </div>
-          <div className='form__buttons'>
-            <button
-              type='submit'
-              className='form__button form__button--yes'
-              disabled={!formState.nameValid}
-            ></button>
-            <button
-              type='button'
-              className='form__button form__button--no'
-              onClick={cancelFormHandler}
-            ></button>
-          </div>
-        </form>
-      </div>
-    );
-  }
+    if (type === 'newContainer') {
+      data = nameContainerRef.current.value;
+    }
+    console.log(data);
+    // onSubmit(data);
+  };
+  return (
+    <div className='form'>
+      <h2 className='form__title'>{title}</h2>
+      <form onSubmit={formHandler} className='form__chest'>
+        {inputs}
+        <div className='form__buttons'>
+          <button
+            type='submit'
+            className='form__button form__button--yes'
+            disabled={!valid}
+          ></button>
+          <button
+            type='button'
+            className='form__button form__button--no'
+            onClick={cancelFormHandler}
+          ></button>
+        </div>
+      </form>
+    </div>
+  );
 };
 
 export default Form;

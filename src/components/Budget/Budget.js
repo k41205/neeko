@@ -90,7 +90,7 @@ const Budget = () => {
         {modalView &&
           ReactDOM.createPortal(
             <Form
-              type={'container'}
+              type={'newContainer'}
               onSubmit={addContainerHandler}
               onCancel={escFormHandler}
             />,

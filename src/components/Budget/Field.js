@@ -1,10 +1,13 @@
 import './Field.css';
 
 const Field = (props) => {
-  const { data = {}, tot, dataMerged = [] } = props;
+  const { data = {}, tot, dataMerged = [], fieldAction } = props;
   const { label, amount, color, description } = data;
   const percentage = ((amount / tot) * 100).toFixed(0);
   const height = (percentage / 100) * 20 * 15;
+  const fieldActionClass = fieldAction
+    ? 'field__actions visible'
+    : 'field__actions hidden';
 
   return (
     <>
@@ -19,7 +22,10 @@ const Field = (props) => {
           <span className='field__details--percentage'>{percentage}%</span>
           <span className='field__details--price'>€{amount}</span>
         </div>
-        <div className='field__actions'></div>
+        <div className={fieldActionClass}>
+          <button className='field__button field__button--edit'></button>
+          <button className='field__button field__button--delete'></button>
+        </div>
       </div>
       {}
     </>
