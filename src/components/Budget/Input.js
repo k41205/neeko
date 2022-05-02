@@ -2,7 +2,7 @@ import './Input.css';
 import React, { useImperativeHandle, useReducer, useRef } from 'react';
 
 const Input = React.forwardRef((props, ref) => {
-  const { type, check, valid, onChange } = props;
+  const { type, check, isValid, onChange } = props;
 
   useImperativeHandle(ref, () => {
     return {
@@ -34,12 +34,12 @@ const Input = React.forwardRef((props, ref) => {
             Field:
           </label>
           <input
-            className={`form__input ${valid === false ? 'error' : ''}`}
+            className={`form__input ${isValid === false ? 'error' : ''}`}
             id='field'
             ref={inputRef}
             onChange={inputChangeHandler}
           ></input>
-          {valid === false ? (
+          {isValid === false ? (
             <p className='error-text'>Field can't be empty or ...</p>
           ) : null}
         </div>
@@ -52,12 +52,12 @@ const Input = React.forwardRef((props, ref) => {
             Amount:
           </label>
           <input
-            className={`form__input ${valid === false ? 'error' : ''}`}
+            className={`form__input ${isValid === false ? 'error' : ''}`}
             id='amount'
             ref={inputRef}
             onChange={inputChangeHandler}
           ></input>
-          {valid === false ? (
+          {isValid === false ? (
             <p className='error-text'>Amount must be a number greater than 0</p>
           ) : null}
         </div>
@@ -100,13 +100,31 @@ const Input = React.forwardRef((props, ref) => {
             Name:
           </label>
           <input
-            className={`form__input ${valid === false ? 'error' : ''}`}
+            className={`form__input ${isValid === false ? 'error' : ''}`}
             id='name'
             ref={inputRef}
             onChange={inputChangeHandler}
           ></input>
-          {valid === false ? (
+          {isValid === false ? (
             <p className='error-text'>Name can't be empty</p>
+          ) : null}
+        </div>
+      );
+      break;
+    case 'containerRename':
+      fieldHtml = (
+        <div className='form__drawer'>
+          <label className='form__label' htmlFor='name'>
+            Name:
+          </label>
+          <input
+            className={`form__input ${isValid === false ? 'error' : ''}`}
+            id='name'
+            ref={inputRef}
+            onChange={inputChangeHandler}
+          ></input>
+          {isValid === false ? (
+            <p className='error-text'>Name can't be empty or the same</p>
           ) : null}
         </div>
       );

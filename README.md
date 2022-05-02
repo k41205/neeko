@@ -1,6 +1,5 @@
 To-do:
 
-- refactor Form component, too complex
 - rename container function
 - edit field function
 - delete field function

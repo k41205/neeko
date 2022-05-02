@@ -7,13 +7,14 @@ import MergedFields from './MergedFields';
 import Backdrop from '../UI/Backdrop';
 
 const Container = (props) => {
-  const { data, onSubmitField, onDeleteContainer } = props;
+  const { data, onSubmitField, onDeleteContainer, onRenameContainer } = props;
   const { fields = [], name } = data;
 
   // STATES
   const [mergedClass, setMergedClass] = useState('merged-hidden');
   const [modalView, setModalView] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [type, setType] = useState('');
 
   // DATA VARS
   const totalAmount = fields.reduce((prev, curr) => prev + curr.amount, 0);
@@ -50,30 +51,36 @@ const Container = (props) => {
 
   // HANDLERS
 
-  const mergedVisibilityHandler = () => {
+  const handleShowMergedFields = () => {
     mergedClass === 'merged-hidden'
       ? setMergedClass('merged-visible')
       : setMergedClass('merged-hidden');
   };
 
-  const newFieldHandler = () => {
+  const handleNewField = () => {
+    setType('newField');
     setModalView(true);
   };
-  const submitFieldFormHandler = (data) => {
+  const handleAction = (type, data) => {
     onSubmitField(data);
     setModalView(false);
   };
 
-  const escFormHandler = () => {
+  const handleEscForm = () => {
     setModalView(false);
   };
 
-  const deleteContainerHandler = () => {
+  const handleDeleteContainer = () => {
     onDeleteContainer(data.ref);
   };
 
-  const editContainerHandler = () => {
+  const handleEditContainer = () => {
     edit ? setEdit(false) : setEdit(true);
+  };
+
+  const handleRenameContainer = () => {
+    setType('renameContainer');
+    setModalView(true);
   };
 
   // JSX VAR
@@ -90,7 +97,7 @@ const Container = (props) => {
 
   const mergedFieldsElement = (
     <div
-      onClick={mergedVisibilityHandler}
+      onClick={handleShowMergedFields}
       className={`field ${mergedClass}`}
       style={{ height: `18px` }}
     >
@@ -108,12 +115,15 @@ const Container = (props) => {
     <div className='container'>
       <div className='container__buttons'>
         <button
-          onClick={editContainerHandler}
+          onClick={handleEditContainer}
           className='container__button container__button--edit'
         ></button>
-        <button className='container__button container__button--rename'></button>
         <button
-          onClick={deleteContainerHandler}
+          className='container__button container__button--rename'
+          onClick={handleRenameContainer}
+        ></button>
+        <button
+          onClick={handleDeleteContainer}
           className='container__button container__button--remove'
         ></button>
       </div>
@@ -121,25 +131,25 @@ const Container = (props) => {
         <h2 className='container__name'>{name}</h2>
       </header>
       <div className='container__stack'>
-        <div onClick={newFieldHandler} className='container__button--add'>
+        <div onClick={handleNewField} className='container__button--add'>
           +
         </div>
         {fieldsMerged.length !== 0 && mergedFieldsElement}
         {fieldsMerged.length !== 0 && (
-          <MergedFields data={fieldsMerged} fieldAction={edit} />
+          <MergedFields data={fieldsMerged} isEditOn={edit} />
         )}
         {modalView &&
           ReactDOM.createPortal(
-            <Backdrop onClick={escFormHandler} />,
+            <Backdrop onClick={handleEscForm} />,
             document.getElementById('backdrop-root')
           )}
         {modalView &&
           ReactDOM.createPortal(
             <Form
-              type={'newField'}
-              containerRef={data.ref}
-              onSubmit={submitFieldFormHandler}
-              onCancel={escFormHandler}
+              type={type}
+              container={data}
+              onSubmit={handleAction}
+              onCancel={handleEscForm}
             />,
             document.getElementById('overlay-root')
           )}
@@ -150,7 +160,7 @@ const Container = (props) => {
             data={field}
             dataMerged={fieldsMerged}
             tot={totalAmount}
-            fieldAction={edit}
+            isEditOn={edit}
           />
         ))}
       </div>

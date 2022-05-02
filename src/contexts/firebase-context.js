@@ -29,6 +29,7 @@ const db = getFirestore(app);
 const FirebaseContext = React.createContext({
   postData: (type, data) => {},
   getData: () => {},
+  updateData: (dataRef) => {},
   deleteData: (dataRef) => {},
 });
 
@@ -51,7 +52,7 @@ export const FirebaseContextProvider = (props) => {
   };
 
   const postData = async (type, data) => {
-    if (type === 'container') {
+    if (type === 'newContainer') {
       try {
         const docRef = await addDoc(collection(db, 'containers'), {
           name: data,
@@ -63,7 +64,7 @@ export const FirebaseContextProvider = (props) => {
         console.error('Error adding document: ', e);
       }
     }
-    if (type === 'field') {
+    if (type === 'newField') {
       console.log(data);
       try {
         await updateDoc(data.ref, {
@@ -72,8 +73,18 @@ export const FirebaseContextProvider = (props) => {
         console.log(`Document updated with ID: (it's a field) `);
         setUpdate((prevState) => prevState + 1);
       } catch (e) {
-        console.error('Error updating document: ', e);
+        console.error('Error creating a new field: ', e);
       }
+    }
+  };
+
+  const updateData = async (dataRef, data) => {
+    try {
+      await updateDoc(dataRef, { name: data });
+      console.log(`Document updated`);
+      setUpdate((prevState) => prevState + 1);
+    } catch (e) {
+      console.error('Error updating a document: ', e);
     }
   };
 
@@ -88,7 +99,9 @@ export const FirebaseContextProvider = (props) => {
   };
 
   return (
-    <FirebaseContext.Provider value={{ getData, postData, deleteData }}>
+    <FirebaseContext.Provider
+      value={{ getData, postData, updateData, deleteData }}
+    >
       {props.children}
     </FirebaseContext.Provider>
   );

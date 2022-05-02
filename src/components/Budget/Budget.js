@@ -45,27 +45,29 @@ const Budget = () => {
   );
 
   // HANDLERS
-  const addContainerHandler = (name) => {
-    ctx.postData('container', name);
+  const handleAddContainer = (type, name) => {
+    ctx.postData('newContainer', name);
     setModalView(false);
   };
 
-  const addField = (data) => {
-    ctx.postData('field', data);
+  const handleAddField = (data) => {
+    ctx.postData('newField', data);
     setModalView(false);
   };
 
-  const deleteContainer = (dataRef) => {
-    console.log(dataRef);
-
+  const handleDeleteContainer = (dataRef) => {
     ctx.deleteData(dataRef);
   };
 
-  const enterFormHandler = () => {
+  const handleNewContainer = () => {
     setModalView(true);
   };
 
-  const escFormHandler = () => {
+  const handleRenameContainer = () => {
+    setModalView(true);
+  };
+
+  const handleEscForm = () => {
     setModalView(false);
   };
 
@@ -77,22 +79,23 @@ const Budget = () => {
             <Container
               key={container.id}
               data={container}
-              onSubmitField={addField}
-              onDeleteContainer={deleteContainer}
+              onSubmitField={handleAddField}
+              onDeleteContainer={handleDeleteContainer}
+              onRenameContainer={handleRenameContainer}
             />
           ))}
-        <button className='budget__button' onClick={enterFormHandler} />
+        <button className='budget__button' onClick={handleNewContainer} />
         {modalView &&
           ReactDOM.createPortal(
-            <Backdrop onClick={escFormHandler} />,
+            <Backdrop onClick={handleEscForm} />,
             document.getElementById('backdrop-root')
           )}
         {modalView &&
           ReactDOM.createPortal(
             <Form
-              type={'newContainer'}
-              onSubmit={addContainerHandler}
-              onCancel={escFormHandler}
+              type='newContainer'
+              onSubmit={handleAddContainer}
+              onCancel={handleEscForm}
             />,
             document.getElementById('overlay-root')
           )}

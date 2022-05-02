@@ -1,4 +1,5 @@
-import { useRef, useReducer } from 'react';
+import { useRef, useReducer, useContext } from 'react';
+import FirebaseContext from '../../contexts/firebase-context';
 import './Form.css';
 import Input from './Input';
 
@@ -36,14 +37,10 @@ const formReducer = (state, action) => {
 };
 
 const Form = (props) => {
-  const { type, onSubmit, onCancel, containerRef } = props;
+  const { type, onSubmit, onCancel, container = {} } = props;
+  const { ref, name } = container;
 
-  const uuid = crypto.randomUUID();
-  const fieldRef = useRef();
-  const amountRef = useRef();
-  const colorRef = useRef();
-  const descriptionRef = useRef();
-  const nameContainerRef = useRef();
+  const ctx = useContext(FirebaseContext);
 
   const [formState, dispatchForm] = useReducer(formReducer, {
     fieldValue: '',
@@ -54,44 +51,51 @@ const Form = (props) => {
     nameValid: null,
   });
 
-  const onChangeFieldName = (value) => {
+  const uuid = crypto.randomUUID();
+  const fieldRef = useRef();
+  const amountRef = useRef();
+  const colorRef = useRef();
+  const descriptionRef = useRef();
+  const nameContainerRef = useRef();
+
+  const handleChangeFieldName = (value) => {
     dispatchForm({ type: 'FIELD_INPUT', val: value });
   };
 
-  const onChangeAmount = (value) => {
+  const handleChangeAmount = (value) => {
     dispatchForm({ type: 'AMOUNT_INPUT', val: +value });
   };
 
-  const onChangeContainerName = (value) => {
+  const handleChangeContainerName = (value) => {
     dispatchForm({ type: 'NAME_INPUT', val: value });
   };
 
-  const cancelFormHandler = () => {
+  const handleEscForm = () => {
     onCancel();
   };
 
   let inputs;
   let title;
-  let valid;
+  let isValid;
 
   switch (type) {
     case 'newField': {
-      valid = formState.fieldValid && formState.amountValid;
+      isValid = formState.fieldValid && formState.amountValid;
       title = 'Create a new field';
       inputs = [
         <Input
           key='fieldName'
           type='fieldName'
           ref={fieldRef}
-          onChange={onChangeFieldName}
-          valid={formState.fieldValid}
+          onChange={handleChangeFieldName}
+          isValid={formState.fieldValid}
         />,
         <Input
           key='amount'
           type='amount'
           ref={amountRef}
-          onChange={onChangeAmount}
-          valid={formState.amountValid}
+          onChange={handleChangeAmount}
+          isValid={formState.amountValid}
         />,
         <Input key='color' type='color' ref={colorRef} />,
         <Input key='description' type='description' ref={descriptionRef} />,
@@ -99,16 +103,30 @@ const Form = (props) => {
       break;
     }
     case 'newContainer': {
-      valid = formState.nameValid;
+      isValid = formState.nameValid;
       title = 'Create a new container';
       inputs = (
         <Input
           type='containerName'
           ref={nameContainerRef}
-          onChange={onChangeContainerName}
-          valid={formState.nameValid}
+          onChange={handleChangeContainerName}
+          isValid={formState.nameValid}
         />
       );
+      break;
+    }
+    case 'renameContainer': {
+      isValid = formState.nameValid && formState.nameValue !== name;
+      title = 'Rename container';
+      inputs = (
+        <Input
+          type='containerRename'
+          ref={nameContainerRef}
+          onChange={handleChangeContainerName}
+          isValid={isValid}
+        />
+      );
+      break;
     }
   }
 
@@ -118,7 +136,7 @@ const Form = (props) => {
     if (type === 'newField') {
       data = {
         id: uuid,
-        ref: containerRef, // it's needed to update the entire object with unionArray in Firestore
+        ref, // it's needed to update the entire object with unionArray in Firestore
         label: fieldRef.current.value,
         amount: +amountRef.current.value,
         color: colorRef.current.value,
@@ -126,11 +144,11 @@ const Form = (props) => {
       };
     }
 
-    if (type === 'newContainer') {
+    if (type === 'newContainer' || type === 'renameContainer') {
       data = nameContainerRef.current.value;
     }
     console.log(data);
-    // onSubmit(data);
+    ctx.updateData(ref, data);
   };
   return (
     <div className='form'>
@@ -141,12 +159,12 @@ const Form = (props) => {
           <button
             type='submit'
             className='form__button form__button--yes'
-            disabled={!valid}
+            disabled={!isValid}
           ></button>
           <button
             type='button'
             className='form__button form__button--no'
-            onClick={cancelFormHandler}
+            onClick={handleEscForm}
           ></button>
         </div>
       </form>

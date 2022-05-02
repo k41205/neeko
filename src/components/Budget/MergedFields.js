@@ -1,10 +1,7 @@
 import './MergedFields.css';
 
 const MergedFields = (props) => {
-  const { data, fieldAction } = props;
-  const fieldActionClass = fieldAction
-    ? 'field__actions visible'
-    : 'field__actions hidden';
+  const { data, isEditOn } = props;
 
   return (
     <div className='mergedFields'>
@@ -18,7 +15,11 @@ const MergedFields = (props) => {
             <p>{field.label}</p>
           </div>
           <div className='mergedFields__price'>€{field.amount}</div>
-          <div className={fieldActionClass}>
+          <div
+            className={
+              isEditOn ? 'field__actions visible' : 'field__actions hidden'
+            }
+          >
             <button className='field__button field__button--edit'></button>
             <button className='field__button field__button--delete'></button>
           </div>
