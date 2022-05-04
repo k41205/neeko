@@ -1,7 +1,20 @@
-import { useRef, useReducer, useContext } from 'react';
+import { useRef, useReducer, useContext, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import FirebaseContext from '../../contexts/firebase-context';
 import './Form.css';
 import Input from './Input';
+import Backdrop from '../UI/Backdrop';
+
+const initialState = {
+  fieldValue: '',
+  fieldValid: null,
+  amountValue: '',
+  amountValid: null,
+  nameValue: '',
+  nameValid: null,
+  colorValue: '',
+  descriptionValue: '',
+};
 
 const formReducer = (state, action) => {
   if (action.type === 'NAME_INPUT') {
@@ -25,31 +38,41 @@ const formReducer = (state, action) => {
       amountValid: action.val > 0,
     };
   }
-  return {
-    fieldValue: '',
-    fieldValid: false,
-    amountValue: '',
-    amountValid: false,
-    nameValue: '',
-    nameValid: false,
-    error: null,
-  };
+  if (action.type === 'COLOR_INPUT') {
+    return {
+      ...state,
+      colorValue: action.val,
+    };
+  }
+  if (action.type === 'DESCRIPTION_INPUT') {
+    return {
+      ...state,
+      descriptionValue: action.val,
+    };
+  }
+  if (action.type === 'UPDATE_STATE') {
+    return {
+      fieldValue: action.val.label,
+      fieldValid: null,
+      amountValue: action.val.amount,
+      amountValid: null,
+      colorValue: action.val.color,
+      descriptionValue: action.val.description,
+    };
+  }
+  return initialState;
 };
 
 const Form = (props) => {
-  const { type, onSubmit, onCancel, container = {} } = props;
-  const { ref, name } = container;
+  const { type, onCancel, container = {}, field = {} } = props;
+  const { ref, name, id } = container;
+
+  // console.log(container);
+  // console.log(field);
 
   const ctx = useContext(FirebaseContext);
 
-  const [formState, dispatchForm] = useReducer(formReducer, {
-    fieldValue: '',
-    fieldValid: null,
-    amountValue: '',
-    amountValid: null,
-    nameValue: '',
-    nameValid: null,
-  });
+  const [formState, dispatchForm] = useReducer(formReducer, initialState);
 
   const uuid = crypto.randomUUID();
   const fieldRef = useRef();
@@ -70,14 +93,33 @@ const Form = (props) => {
     dispatchForm({ type: 'NAME_INPUT', val: value });
   };
 
-  const handleEscForm = () => {
-    onCancel();
+  const handleChangeColor = (value) => {
+    dispatchForm({ type: 'COLOR_INPUT', val: value });
   };
+  const handleChangeDescription = (value) => {
+    dispatchForm({ type: 'DESCRIPTION_INPUT', val: value });
+  };
+
+  const updateStateForm = (value) => {
+    dispatchForm({ type: 'UPDATE_STATE', val: value });
+  };
+
+  const handleEscForm = () => {
+    ctx.closeModalView();
+  };
+
+  // useEffect(() => {
+  //   if (type === 'editField') {
+  //     updateStateForm(field);
+  //     console.log(formState);
+  //   }
+  // }, []);
 
   let inputs;
   let title;
   let isValid;
 
+  // INPUTS ASSIGNMENT
   switch (type) {
     case 'newField': {
       isValid = formState.fieldValid && formState.amountValid;
@@ -97,8 +139,55 @@ const Form = (props) => {
           onChange={handleChangeAmount}
           isValid={formState.amountValid}
         />,
-        <Input key='color' type='color' ref={colorRef} />,
-        <Input key='description' type='description' ref={descriptionRef} />,
+        <Input
+          key='color'
+          type='color'
+          ref={colorRef}
+          onChange={handleChangeColor}
+        />,
+        <Input
+          key='description'
+          type='description'
+          ref={descriptionRef}
+          onChange={handleChangeDescription}
+        />,
+      ];
+      break;
+    }
+    case 'editField': {
+      isValid = formState.fieldValid && formState.amountValid;
+      title = 'Edit field';
+      inputs = [
+        <Input
+          key='fieldName'
+          type='fieldName'
+          ref={fieldRef}
+          onChange={handleChangeFieldName}
+          isValid={formState.fieldValid}
+          defaultValue={field.label}
+        />,
+        <Input
+          key='amount'
+          type='amount'
+          ref={amountRef}
+          onChange={handleChangeAmount}
+          isValid={formState.amountValid}
+          defaultValue={field.amount}
+        />,
+        <Input
+          key='color'
+          type='color'
+          defaultValue={field.color}
+          ref={colorRef}
+          onChange={handleChangeColor}
+        />,
+        <Input
+          key='description'
+          type='description'
+          defaultValue={field.description}
+          ref={descriptionRef}
+          onChange={handleChangeDescription}
+        />,
       ];
       break;
     }
@@ -134,6 +223,8 @@ const Form = (props) => {
     e.preventDefault();
     let data;
     if (type === 'newField') {
+      console.log(type);
+
       data = {
         id: uuid,
         ref, // it's needed to update the entire object with unionArray in Firestore
@@ -142,33 +233,74 @@ const Form = (props) => {
         color: colorRef.current.value,
         description: descriptionRef.current.value,
       };
+      console.log(data);
+
+      // ctx.postData(type, data);
+    }
+    if (type === 'editField') {
+      console.log(type);
+      data = {
+        id: uuid,
+        ref: field.ref, // it's needed to update the entire object with unionArray in Firestore
+        label: fieldRef.current.value,
+        amount: +amountRef.current.value,
+        color: colorRef.current.value,
+        description: descriptionRef.current.value,
+      };
+      console.log(data);
+
+      ctx.updateField(field, data);
     }
 
-    if (type === 'newContainer' || type === 'renameContainer') {
+    // if (type === 'editField') {
+    //   data = {
+    //     id,
+    //     ref, // it's needed to update the entire object with unionArray in Firestore
+    //     label: fieldRef.current.value,
+    //     amount: +amountRef.current.value,
+    //     color: colorRef.current.value,
+    //     description: descriptionRef.current.value,
+    //   };
+    //   // ctx.postData(type, data);
+    // }
+
+    if (type === 'newContainer') {
       data = nameContainerRef.current.value;
+      ctx.postData(type, data);
     }
-    console.log(data);
-    ctx.updateData(ref, data);
+
+    if (type === 'renameContainer') {
+      data = nameContainerRef.current.value;
+      ctx.updateData(ref, data);
+    }
+    onCancel();
   };
+
   return (
-    <div className='form'>
-      <h2 className='form__title'>{title}</h2>
-      <form onSubmit={formHandler} className='form__chest'>
-        {inputs}
-        <div className='form__buttons'>
-          <button
-            type='submit'
-            className='form__button form__button--yes'
-            disabled={!isValid}
-          ></button>
-          <button
-            type='button'
-            className='form__button form__button--no'
-            onClick={handleEscForm}
-          ></button>
-        </div>
-      </form>
-    </div>
+    <>
+      {ReactDOM.createPortal(
+        <Backdrop onClick={onCancel} />,
+        document.getElementById('backdrop-root')
+      )}
+      <div className='form'>
+        <h2 className='form__title'>{title}</h2>
+        <form onSubmit={formHandler} className='form__chest'>
+          {inputs}
+          <div className='form__buttons'>
+            <button
+              type='submit'
+              className='form__button form__button--yes'
+              disabled={!isValid}
+            ></button>
+            <button
+              type='button'
+              className='form__button form__button--no'
+              onClick={handleEscForm}
+            ></button>
+          </div>
+        </form>
+      </div>
+    </>
   );
 };
 

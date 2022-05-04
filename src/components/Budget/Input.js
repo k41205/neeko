@@ -1,8 +1,8 @@
 import './Input.css';
-import React, { useImperativeHandle, useReducer, useRef } from 'react';
+import React, { useImperativeHandle, useRef } from 'react';
 
 const Input = React.forwardRef((props, ref) => {
-  const { type, check, isValid, onChange } = props;
+  const { type, isValid, defaultValue = '', onChange } = props;
 
   useImperativeHandle(ref, () => {
     return {
@@ -22,7 +22,7 @@ const Input = React.forwardRef((props, ref) => {
 
   let fieldHtml;
 
-  const inputChangeHandler = (e) => {
+  const handleInputChange = (e) => {
     onChange(e.target.value);
   };
 
@@ -37,7 +37,8 @@ const Input = React.forwardRef((props, ref) => {
             className={`form__input ${isValid === false ? 'error' : ''}`}
             id='field'
             ref={inputRef}
-            onChange={inputChangeHandler}
+            onChange={handleInputChange}
+            defaultValue={defaultValue}
           ></input>
           {isValid === false ? (
             <p className='error-text'>Field can't be empty or ...</p>
@@ -55,7 +56,8 @@ const Input = React.forwardRef((props, ref) => {
             className={`form__input ${isValid === false ? 'error' : ''}`}
             id='amount'
             ref={inputRef}
-            onChange={inputChangeHandler}
+            defaultValue={defaultValue}
+            onChange={handleInputChange}
           ></input>
           {isValid === false ? (
             <p className='error-text'>Amount must be a number greater than 0</p>
@@ -74,21 +76,25 @@ const Input = React.forwardRef((props, ref) => {
             id='color'
             ref={inputRef}
             type='color'
-            defaultValue={randomColor()}
+            defaultValue={defaultValue || randomColor()}
+            onChange={handleInputChange}
           ></input>
         </div>
       );
       break;
     case 'description':
+      // debugger;
       fieldHtml = (
         <div className='form__drawer'>
           <label className='form__label' htmlFor='description'>
             Description:
           </label>
           <textarea
+            defaultValue={defaultValue}
             className='form__input'
             id='description'
             ref={inputRef}
+            onChange={handleInputChange}
           ></textarea>
         </div>
       );
@@ -103,7 +109,7 @@ const Input = React.forwardRef((props, ref) => {
             className={`form__input ${isValid === false ? 'error' : ''}`}
             id='name'
             ref={inputRef}
-            onChange={inputChangeHandler}
+            onChange={handleInputChange}
           ></input>
           {isValid === false ? (
             <p className='error-text'>Name can't be empty</p>
@@ -121,7 +127,7 @@ const Input = React.forwardRef((props, ref) => {
             className={`form__input ${isValid === false ? 'error' : ''}`}
             id='name'
             ref={inputRef}
-            onChange={inputChangeHandler}
+            onChange={handleInputChange}
           ></input>
           {isValid === false ? (
             <p className='error-text'>Name can't be empty or the same</p>

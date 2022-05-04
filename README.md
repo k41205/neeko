@@ -6,6 +6,7 @@ To-do:
 
 Other things I could implement:
 
+- order container for total amount and data creation
 - secure delete function for containers (ask you to digit the name of the container you are deleting)
 - edit and delete container icons appearing on hover a container and need to create a hidden space on the top of the container where to put them in order to hover the container and be still able to click the icons without them disappearing.
 - data validation rules on Firestore

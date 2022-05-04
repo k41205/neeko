@@ -140,11 +140,6 @@ const Container = (props) => {
         )}
         {modalView &&
           ReactDOM.createPortal(
-            <Backdrop onClick={handleEscForm} />,
-            document.getElementById('backdrop-root')
-          )}
-        {modalView &&
-          ReactDOM.createPortal(
             <Form
               type={type}
               container={data}

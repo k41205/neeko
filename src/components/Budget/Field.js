@@ -1,4 +1,8 @@
+import { useState, useContext } from 'react';
+import ReactDOM from 'react-dom';
+import Form from './Form';
 import './Field.css';
+import FirebaseContext from '../../contexts/firebase-context';
 
 const Field = (props) => {
   const { data = {}, tot, dataMerged = [], isEditOn } = props;
@@ -6,6 +10,24 @@ const Field = (props) => {
   const percentage = ((amount / tot) * 100).toFixed(0);
   const height = (percentage / 100) * 20 * 15;
 
+  const [modalView, setModalView] = useState(false);
+  const [type, setType] = useState('');
+  const ctx = useContext(FirebaseContext);
+
+  const handleEditField = () => {
+    setType('editField');
+    setModalView(true);
+  };
+
+  const handleDeleteField = () => {
+    console.log(data);
+
+    // ctx.postData('deleteField', data);
+  };
+
+  const handleEscForm = () => {
+    setModalView(false);
+  };
   return (
     <>
       <div
@@ -24,9 +46,20 @@ const Field = (props) => {
             isEditOn ? 'field__actions visible' : 'field__actions hidden'
           }
         >
-          <button className='field__button field__button--edit'></button>
-          <button className='field__button field__button--delete'></button>
+          <button
+            className='field__button field__button--edit'
+            onClick={handleEditField}
+          ></button>
+          <button
+            className='field__button field__button--delete'
+            onClick={handleDeleteField}
+          ></button>
         </div>
+        {modalView &&
+          ReactDOM.createPortal(
+            <Form type={type} field={data} onCancel={handleEscForm} />,
+            document.getElementById('overlay-root')
+          )}
       </div>
       {}
     </>

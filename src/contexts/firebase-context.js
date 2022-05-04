@@ -9,6 +9,11 @@ import {
   arrayUnion,
   doc,
   deleteDoc,
+  where,
+  query,
+  getDoc,
+  FieldValue,
+  arrayRemove,
 } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -31,6 +36,7 @@ const FirebaseContext = React.createContext({
   getData: () => {},
   updateData: (dataRef) => {},
   deleteData: (dataRef) => {},
+  updateField: (oldData, newData) => {},
 });
 
 export const FirebaseContextProvider = (props) => {
@@ -76,6 +82,66 @@ export const FirebaseContextProvider = (props) => {
         console.error('Error creating a new field: ', e);
       }
     }
+
+    if (type === 'editField') {
+      try {
+        console.log(data.id);
+
+        const containersRef = collection(db, 'containers');
+        const q = query(
+          containersRef,
+          where('fields', 'array-contains', data.id)
+        );
+        console.log(q);
+
+        // const querySnapshot = await getDoc(q);
+        // console.log(querySnapshot);
+        await updateDoc(data.ref, {
+          fields: arrayRemove(data),
+        });
+        await updateDoc(data.ref, {
+          fields: arrayUnion(data),
+        });
+
+        console.log(`Document updated with ID: (it's a field) `);
+        setUpdate((prevState) => prevState + 1);
+      } catch (e) {
+        console.error('Error updating a field: ', e);
+      }
+    }
+
+    if (type === 'deleteField') {
+      console.log('wow');
+
+      try {
+        await updateDoc(data.ref, {
+          fields: arrayRemove(data),
+        });
+        console.log(`Document deleted with ID: (it's a field) `);
+        setUpdate((prevState) => prevState + 1);
+      } catch (e) {
+        console.error('Error deleting a field: ', e);
+      }
+    }
+  };
+
+  const updateField = async (oldData, newData) => {
+    console.log(oldData);
+    console.log(newData);
+
+    try {
+      await updateDoc(oldData.ref, {
+        fields: arrayRemove(oldData),
+      });
+      await updateDoc(newData.ref, {
+        fields: arrayUnion(newData),
+      });
+
+      console.log(`Document updated with ID: (it's a field) `);
+      setUpdate((prevState) => prevState + 1);
+    } catch (e) {
+      console.error('Error updating a field: ', e);
+    }
   };
 
   const updateData = async (dataRef, data) => {
@@ -100,7 +166,13 @@ export const FirebaseContextProvider = (props) => {
 
   return (
     <FirebaseContext.Provider
-      value={{ getData, postData, updateData, deleteData }}
+      value={{
+        getData,
+        postData,
+        updateData,
+        deleteData,
+        updateField,
+      }}
     >
       {props.children}
     </FirebaseContext.Provider>

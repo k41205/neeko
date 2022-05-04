@@ -3,7 +3,6 @@ import './Budget.css';
 import { useState, useEffect, useContext } from 'react';
 import ReactDOM from 'react-dom';
 import Form from './Form';
-import Backdrop from '../UI/Backdrop';
 import FirebaseContext from '../../contexts/firebase-context';
 
 const Budget = () => {
@@ -45,11 +44,6 @@ const Budget = () => {
   );
 
   // HANDLERS
-  const handleAddContainer = (type, name) => {
-    ctx.postData('newContainer', name);
-    setModalView(false);
-  };
-
   const handleAddField = (data) => {
     ctx.postData('newField', data);
     setModalView(false);
@@ -60,10 +54,6 @@ const Budget = () => {
   };
 
   const handleNewContainer = () => {
-    setModalView(true);
-  };
-
-  const handleRenameContainer = () => {
     setModalView(true);
   };
 
@@ -81,22 +71,12 @@ const Budget = () => {
               data={container}
               onSubmitField={handleAddField}
               onDeleteContainer={handleDeleteContainer}
-              onRenameContainer={handleRenameContainer}
             />
           ))}
         <button className='budget__button' onClick={handleNewContainer} />
         {modalView &&
           ReactDOM.createPortal(
-            <Backdrop onClick={handleEscForm} />,
-            document.getElementById('backdrop-root')
-          )}
-        {modalView &&
-          ReactDOM.createPortal(
-            <Form
-              type='newContainer'
-              onSubmit={handleAddContainer}
-              onCancel={handleEscForm}
-            />,
+            <Form type='newContainer' onCancel={handleEscForm} />,
             document.getElementById('overlay-root')
           )}
       </div>
