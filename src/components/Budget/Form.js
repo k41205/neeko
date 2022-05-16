@@ -14,6 +14,7 @@ const initialState = {
   nameValid: null,
   colorValue: '',
   descriptionValue: '',
+  changed: null,
 };
 
 const formReducer = (state, action) => {
@@ -51,13 +52,31 @@ const formReducer = (state, action) => {
     };
   }
   if (action.type === 'UPDATE_STATE') {
+    console.log(action.val.value.label);
+    console.log(action.val.fieldRef.current.value);
+    console.log(action.val.value.label !== action.val.fieldRef.current.value);
+    console.log(action.val.value.amount);
+    console.log(+action.val.amountRef.current.value);
+    console.log(
+      action.val.value.amount !== +action.val.amountRef.current.value
+    );
+    console.log(
+      action.val.value.label !== action.val.fieldRef.current.value ||
+        action.val.value.amount !== +action.val.amountRef.current.value.amount
+    );
+
     return {
-      fieldValue: action.val.label,
-      fieldValid: null,
-      amountValue: action.val.amount,
-      amountValid: null,
-      colorValue: action.val.color,
-      descriptionValue: action.val.description,
+      fieldValue: action.val.value.label,
+      fieldValid:
+        action.val.value.label.trim().length !== 0 &&
+        action.val.value.label !== '...',
+      amountValue: action.val.value.amount,
+      amountValid: action.val.value.amount > 0,
+      colorValue: action.val.value.color,
+      descriptionValue: action.val.value.description,
+      changed:
+        action.val.value.label !== action.val.fieldRef.current.value ||
+        action.val.value.amount !== +action.val.amountRef.current.value,
     };
   }
   return initialState;
@@ -68,7 +87,14 @@ const Form = (props) => {
   const { ref, name, id } = container;
 
   // console.log(container);
-  // console.log(field);
+  console.log(field);
+
+  useEffect(() => {
+    if (Object.keys(field) !== 0) {
+      console.log('yes');
+      updateStateForm(field);
+    }
+  }, []);
 
   const ctx = useContext(FirebaseContext);
 
@@ -101,11 +127,11 @@ const Form = (props) => {
   };
 
   const updateStateForm = (value) => {
-    dispatchForm({ type: 'UPDATE_STATE', val: value });
+    dispatchForm({ type: 'UPDATE_STATE', val: { value, fieldRef, amountRef } });
   };
 
   const handleEscForm = () => {
-    ctx.closeModalView();
+    onCancel();
   };
 
   // useEffect(() => {
@@ -155,8 +181,12 @@ const Form = (props) => {
       break;
     }
     case 'editField': {
+      console.log(formState.changed);
+
       isValid = formState.fieldValid && formState.amountValid;
       title = 'Edit field';
+      console.log(formState.field);
+
       inputs = [
         <Input
           key='fieldName'
@@ -189,6 +219,11 @@ const Form = (props) => {
           onChange={handleChangeDescription}
         />,
       ];
+      console.log(fieldRef);
+      console.log(isValid);
+      console.log(amountRef);
+      console.log(formState.nameValid);
+
       break;
     }
     case 'newContainer': {
@@ -235,7 +270,7 @@ const Form = (props) => {
       };
       console.log(data);
 
-      // ctx.postData(type, data);
+      ctx.postData(type, data);
     }
     if (type === 'editField') {
       console.log(type);
