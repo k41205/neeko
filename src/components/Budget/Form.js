@@ -52,19 +52,6 @@ const formReducer = (state, action) => {
     };
   }
   if (action.type === 'UPDATE_STATE') {
-    console.log(action.val.value.label);
-    console.log(action.val.fieldRef.current.value);
-    console.log(action.val.value.label !== action.val.fieldRef.current.value);
-    console.log(action.val.value.amount);
-    console.log(+action.val.amountRef.current.value);
-    console.log(
-      action.val.value.amount !== +action.val.amountRef.current.value
-    );
-    console.log(
-      action.val.value.label !== action.val.fieldRef.current.value ||
-        action.val.value.amount !== +action.val.amountRef.current.value.amount
-    );
-
     return {
       fieldValue: action.val.value.label,
       fieldValid:
@@ -85,13 +72,10 @@ const formReducer = (state, action) => {
 const Form = (props) => {
   const { type, onCancel, container = {}, field = {} } = props;
   const { ref, name, id } = container;
-
-  // console.log(container);
   console.log(field);
 
   useEffect(() => {
-    if (Object.keys(field) !== 0) {
-      console.log('yes');
+    if (Object.keys(field) !== 0 && type === 'editField') {
       updateStateForm(field);
     }
   }, []);
@@ -134,13 +118,6 @@ const Form = (props) => {
     onCancel();
   };
 
-  // useEffect(() => {
-  //   if (type === 'editField') {
-  //     updateStateForm(field);
-  //     console.log(formState);
-  //   }
-  // }, []);
-
   let inputs;
   let title;
   let isValid;
@@ -181,12 +158,8 @@ const Form = (props) => {
       break;
     }
     case 'editField': {
-      console.log(formState.changed);
-
       isValid = formState.fieldValid && formState.amountValid;
       title = 'Edit field';
-      console.log(formState.field);
-
       inputs = [
         <Input
           key='fieldName'
@@ -219,11 +192,6 @@ const Form = (props) => {
           onChange={handleChangeDescription}
         />,
       ];
-      console.log(fieldRef);
-      console.log(isValid);
-      console.log(amountRef);
-      console.log(formState.nameValid);
-
       break;
     }
     case 'newContainer': {
@@ -258,8 +226,6 @@ const Form = (props) => {
     e.preventDefault();
     let data;
     if (type === 'newField') {
-      console.log(type);
-
       data = {
         id: uuid,
         ref, // it's needed to update the entire object with unionArray in Firestore
@@ -268,12 +234,9 @@ const Form = (props) => {
         color: colorRef.current.value,
         description: descriptionRef.current.value,
       };
-      console.log(data);
-
       ctx.postData(type, data);
     }
     if (type === 'editField') {
-      console.log(type);
       data = {
         id: uuid,
         ref: field.ref, // it's needed to update the entire object with unionArray in Firestore
@@ -282,22 +245,8 @@ const Form = (props) => {
         color: colorRef.current.value,
         description: descriptionRef.current.value,
       };
-      console.log(data);
-
       ctx.updateField(field, data);
     }
-
-    // if (type === 'editField') {
-    //   data = {
-    //     id,
-    //     ref, // it's needed to update the entire object with unionArray in Firestore
-    //     label: fieldRef.current.value,
-    //     amount: +amountRef.current.value,
-    //     color: colorRef.current.value,
-    //     description: descriptionRef.current.value,
-    //   };
-    //   // ctx.postData(type, data);
-    // }
 
     if (type === 'newContainer') {
       data = nameContainerRef.current.value;

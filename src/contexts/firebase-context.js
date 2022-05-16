@@ -40,14 +40,10 @@ const FirebaseContext = React.createContext({
 });
 
 export const FirebaseContextProvider = (props) => {
-  console.log('Context');
-
   const [update, setUpdate] = useState(0);
 
   const getData = async () => {
     const querySnapshot = await getDocs(collection(db, 'containers'));
-    // obj.docs[0]._document.data.value.mapValue.fields
-    // console.log(querySnapshot);
     const containers = querySnapshot.docs.map((doc) => {
       const data = doc.data();
       data.id = doc.id;
@@ -71,7 +67,6 @@ export const FirebaseContextProvider = (props) => {
       }
     }
     if (type === 'newField') {
-      console.log(data);
       try {
         await updateDoc(data.ref, {
           fields: arrayUnion(data),
@@ -82,37 +77,7 @@ export const FirebaseContextProvider = (props) => {
         console.error('Error creating a new field: ', e);
       }
     }
-
-    if (type === 'editField') {
-      try {
-        console.log(data.id);
-
-        const containersRef = collection(db, 'containers');
-        const q = query(
-          containersRef,
-          where('fields', 'array-contains', data.id)
-        );
-        console.log(q);
-
-        // const querySnapshot = await getDoc(q);
-        // console.log(querySnapshot);
-        await updateDoc(data.ref, {
-          fields: arrayRemove(data),
-        });
-        await updateDoc(data.ref, {
-          fields: arrayUnion(data),
-        });
-
-        console.log(`Document updated with ID: (it's a field) `);
-        setUpdate((prevState) => prevState + 1);
-      } catch (e) {
-        console.error('Error updating a field: ', e);
-      }
-    }
-
     if (type === 'deleteField') {
-      console.log('wow');
-
       try {
         await updateDoc(data.ref, {
           fields: arrayRemove(data),
@@ -126,9 +91,6 @@ export const FirebaseContextProvider = (props) => {
   };
 
   const updateField = async (oldData, newData) => {
-    console.log(oldData);
-    console.log(newData);
-
     try {
       await updateDoc(oldData.ref, {
         fields: arrayRemove(oldData),

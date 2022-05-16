@@ -20,9 +20,7 @@ const Field = (props) => {
   };
 
   const handleDeleteField = () => {
-    console.log(data);
-
-    // ctx.postData('deleteField', data);
+    ctx.postData('deleteField', data);
   };
 
   const handleEscForm = () => {

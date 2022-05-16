@@ -14,7 +14,7 @@ const Budget = () => {
   useEffect(() => {
     ctx.getData().then((fetchedContainers) => setContainers(fetchedContainers));
   }, [ctx]);
-  console.log(containers);
+  // console.log(containers);
 
   // DATA VARS
   const totalExpense = containers
