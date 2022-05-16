@@ -72,7 +72,6 @@ const formReducer = (state, action) => {
 const Form = (props) => {
   const { type, onCancel, container = {}, field = {} } = props;
   const { ref, name, id } = container;
-  console.log(field);
 
   useEffect(() => {
     if (Object.keys(field) !== 0 && type === 'editField') {

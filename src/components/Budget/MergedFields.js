@@ -13,8 +13,6 @@ const MergedFields = (props) => {
   const ctx = useContext(FirebaseContext);
 
   const handleEditField = (field) => {
-    console.log(field);
-
     setType('editField');
     setDataField(field);
     setModalView(true);
