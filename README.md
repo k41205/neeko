@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/0618e3ee-7cd9-4955-a111-fc3db214cfad/deploy-status)](https://app.netlify.com/sites/effervescent-cheesecake-896011/deploys)
+
 To-do:
 
 - rename container function
