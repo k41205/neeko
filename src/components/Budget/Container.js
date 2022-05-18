@@ -4,10 +4,9 @@ import './Container.css';
 import Field from './Field';
 import Form from './Form';
 import MergedFields from './MergedFields';
-import Backdrop from '../UI/Backdrop';
 
 const Container = (props) => {
-  const { data, onSubmitField, onDeleteContainer, onRenameContainer } = props;
+  const { data, onSubmitField, onDeleteContainer } = props;
   const { fields = [], name } = data;
 
   // STATES
@@ -153,7 +152,6 @@ const Container = (props) => {
           <Field
             key={field.id}
             data={field}
-            dataMerged={fieldsMerged}
             tot={totalAmount}
             isEditOn={edit}
           />

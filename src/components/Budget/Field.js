@@ -5,7 +5,7 @@ import './Field.css';
 import FirebaseContext from '../../contexts/firebase-context';
 
 const Field = (props) => {
-  const { data = {}, tot, dataMerged = [], isEditOn } = props;
+  const { data = {}, tot, isEditOn } = props;
   const { label, amount, color, description } = data;
   const percentage = ((amount / tot) * 100).toFixed(0);
   const height = (percentage / 100) * 20 * 15;

@@ -7,12 +7,7 @@ import {
   getDocs,
   updateDoc,
   arrayUnion,
-  doc,
   deleteDoc,
-  where,
-  query,
-  getDoc,
-  FieldValue,
   arrayRemove,
 } from 'firebase/firestore';
 
