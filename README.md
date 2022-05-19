@@ -1,8 +1,8 @@
-# Intro
+# Neeko
 
 A simple app where you can plan your month expenses by creating a stack container with all the expenses you made in it.
 
-It's my first app created with React to put in practice what I studied some months earlier. 
+It's my first app created with React to put in practice what I studied some months earlier. The backend is managed through Firebase.
 
 You can give a look at it here:
 

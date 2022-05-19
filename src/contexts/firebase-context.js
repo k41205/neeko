@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { initializeApp } from 'firebase/app';
+import { getAnalytics } from 'firebase/analytics';
 import {
   getFirestore,
   collection,
@@ -18,10 +19,14 @@ const firebaseConfig = {
   storageBucket: 'neeko-aa020.appspot.com',
   messagingSenderId: '727544693791',
   appId: '1:727544693791:web:1fc671ecfca5671ea1012a',
+  measurementId: 'G-W3XSXH3EH3',
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+//  Initialize Analytics
+const analytics = getAnalytics(app);
 
 // Initialize Cloud Firestore and get a reference to the service
 const db = getFirestore(app);
