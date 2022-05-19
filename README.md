@@ -1,4 +1,4 @@
-# Neeko
+## Description
 
 A simple app where you can plan your month expenses by creating a stack container with all the expenses you made in it.
 
