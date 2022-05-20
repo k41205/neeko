@@ -2,7 +2,7 @@
 
 A simple app where you can plan your month expenses by creating a stack container with all the expenses you made in it.
 
-It's my first app created with React to put in practice what I studied some months earlier. The backend is managed through Firebase.
+It's my first app created with React to put in practice what I studied some months earlier. Don't focus too much on the graphical aspect of the app. This project had in mind to get handy with React libraries. For this reason I avoided any external library (like Formik). The backend is managed through Firebase.
 
 You can give a look at it here:
 
