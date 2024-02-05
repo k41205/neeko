@@ -8,6 +8,8 @@ You can give a look at it here:
 
 [Neeko app](https://neeko-app.netlify.app/ "Homepage")
 
+![image](https://github.com/k41205/neeko/assets/93975067/6022c0b4-c6e2-4215-98d3-e648c2428ab7)
+
 Hosted on Netlify with automated CI/CD:
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/0618e3ee-7cd9-4955-a111-fc3db214cfad/deploy-status)](https://app.netlify.com/sites/effervescent-cheesecake-896011/deploys)
